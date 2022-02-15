@@ -1,0 +1,5 @@
+{
+  "name": "neon-club-music-visualizer",
+  "description": "neon club music visualizer",
+  "start_url": "index.js"
+}
