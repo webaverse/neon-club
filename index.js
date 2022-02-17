@@ -8,7 +8,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-import { camera, getComposer, getRenderer } from '../../renderer'
+import { camera, getComposer, getRenderer } from 'https://github.com/webaverse/app/blob/master/renderer.js'
 import {
   createAudio,
   getFrequenciesByRange,
