@@ -15,16 +15,16 @@ import {
   getThreshold,
   logMood,
   updateMoodArray,
-} from './audio'
-import { Earthquake } from './passes/Earthquake'
+} from './audio/index.js'
+import { Earthquake } from './passes/Earthquake.js'
 import {
   neonClubEmissiveFragmentShader,
   neonClubEmissiveVertexShader,
-} from './shaders/neonEmissive'
+} from './shaders/neonEmissive.js'
 import {
   neonParticlesFragmentShader,
   neonParticlesVertexShader,
-} from './shaders/neonParticles'
+} from './shaders/neonParticles.js'
 
 const { useApp, useLoaders, useFrame, useCleanup, usePhysics } = metaversefile
 
