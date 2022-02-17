@@ -1,11 +1,14 @@
 import * as THREE from 'three'
+
+const glsl = (x) => x
+
 const neonClubEmissiveVertexShader = `
     ${THREE.ShaderChunk.common}
     varying vec2 vUv;
     uniform vec2 uResolution;
     uniform float uTime;
 
-${THREE.ShaderChunk.logdepthbuf_pars_vertex}
+    ${THREE.ShaderChunk.logdepthbuf_pars_vertex}
     void main() {
       vUv = uv;
       vec3 newPosition = position;
@@ -14,7 +17,7 @@ ${THREE.ShaderChunk.logdepthbuf_pars_vertex}
       vec4 projectedPosition = projectionMatrix * viewPosition;
 
       gl_Position = projectedPosition;
-  ${THREE.ShaderChunk.logdepthbuf_vertex}
+      ${THREE.ShaderChunk.logdepthbuf_vertex}
     }
   `
 
@@ -78,11 +81,11 @@ const neonClubEmissiveFragmentShader = `
     float rz = vUv.x + 1.;
   
         //rings
-    p /= exp(mod(uTime/10., 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679));
+    p /= exp(mod(uTime/10000., 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679));
     // p /= exp(mod(1.2 , 3.14159 ));
     rz /= pow(abs((0. - circ(p))), .5);
   
-    // rz = mix(1., rz , clamp(abs(sin(uTime)) , 0.,.25));
+    // rz = mix(1., rz , clamp(abs(sin(uTime/100.)) , 0.,.25));
     // vec3 col = vec3(.2 + uBeat / 2000., 0.4, 1.) / rz;
     // vec3 col = gradiantColor / rz;
     vec3 moodColor = uMood;

@@ -1,4 +1,7 @@
 import * as THREE from 'three'
+
+const glsl = (x) => x
+
 const neonParticlesVertexShader = `
       ${THREE.ShaderChunk.common}
       varying vec2 vUv;
@@ -151,7 +154,7 @@ const neonParticlesVertexShader = `
 
 ${THREE.ShaderChunk.logdepthbuf_pars_vertex}
 void main() {
-  float angle1 = sin(position.y * 2.) * 2.;
+  float angle1 = sin(position.y * 2.) * 2. * sin(uTime/100000000.*uBeat);
   vec3 newPosition = position;
   newPosition.xz += fract(sin(dot(uv, vec2(12.9898, 78.233))) * 10.) / 4.;
   newPosition.xz *= get2dRotateMatrix(angle1);
@@ -162,57 +165,57 @@ void main() {
   vec2 p = uv;
 
   float rz = dualfbm(uv);
-
-	//rings
   p /= exp(mod(uTime * 10., 3.14159));
   rz *= pow(abs((0.1 - circ(p ))), .9);
-// if(uBeat >= 0.53){
-  newPosition *= rz;
-  // newPosition += uBeat;
-// }
-
+  // newPosition *= rz;
   vec4 modelPosition = modelMatrix * vec4(position, 1.0);
   vec4 viewPosition = viewMatrix * modelPosition;
   vec4 projectedPosition = projectionMatrix * viewPosition;
-    // projectedPosition.xz = modelViewMatrix.xz * rotateMatrix;
-    // vPattern =  vec3(1. - step(.5 , distance(gl_PointCoord, vec2(.5))));
+  // projectedPosition.xz = modelViewMatrix.xz * rotateMatrix;
+  // vPattern =  vec3(1. - step(.5 , distance(gl_PointCoord, vec2(.5))));
   gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.);
+  // gl_Position = projectedPosition;
   gl_PointSize = uSize;
-  gl_PointSize *= 1. / -viewPosition.z;
-    ${THREE.ShaderChunk.logdepthbuf_vertex}
+  // gl_PointSize *= 1. / -viewPosition.z;
+  ${THREE.ShaderChunk.logdepthbuf_vertex}
 }
     `
 
 const neonParticlesFragmentShader = `
-precision highp float;
-precision highp int;
-#define PI 3.1415926535897932384626433832795
-${THREE.ShaderChunk.logdepthbuf_pars_fragment}
-varying vec3 vPattern;
-varying vec2 vUv;
-uniform vec2 uResolution;
-uniform float uTime;
-uniform float uBeat;
-uniform sampler2D uTexture;
+  precision highp float;
+  precision highp int;
+  #define PI 3.1415926535897932384626433832795
+  ${THREE.ShaderChunk.logdepthbuf_pars_fragment}
+  varying vec3 vPattern;
+  varying vec2 vUv;
+  uniform vec2 uResolution;
+  uniform float uTime;
+  uniform float uBeat;
+  uniform sampler2D uTexture;
+  
+  void main() {
+    vec3 t = vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863) / 5. * vec3(texture2D(uTexture, vUv));
+    t.r += uBeat/6.;
+    t.g += uBeat/7.;
+    t.b += uBeat/8.;
+    vec3 col = vec3(pow(1. - distance(gl_PointCoord, vec2(.5)), 10.)) * t;
+    // if(uBeat >= 0.3) {
+    //   col.r += 0.008 ;
+    // }
+    // if(uBeat >= 0.175 && uBeat <= 0.2) {
+    //   col.r += 0.008 ;
+    // }
+    // if(uBeat >= 0.19 && uBeat <= 0.22) {
+    //   col.r += 0.008 ;
+    // }
+    // col.r += sin(uBeat*1000.)/100.;
+    // col.r += uBeat/10. ;
+    // gl_FragColor = vec4(col, 1.);
 
-void main() {
-  vec3 col = vec3(pow(1. - distance(gl_PointCoord, vec2(.5)), 10.)) * vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863) / 5. * vec3(texture2D(uTexture, vUv));
-  // if(uBeat >= 0.3) {
-  //   col.r += 0.008 ;
-  // }
-  // if(uBeat >= 0.175 && uBeat <= 0.2) {
-  //   col.r += 0.008 ;
-  // }
-  // if(uBeat >= 0.19 && uBeat <= 0.22) {
-  //   col.r += 0.008 ;
-  // }
-  // col.r += sin(uBeat*1000.)/100.;
-  col.r += uBeat/100000. ;
-  // gl_FragColor = vec4(col, 1.);
-  gl_FragColor = vec4(col, uBeat * abs(cos(uTime)));
-// gl_FragColor = vec4(vec3(pow(1. - distance(gl_PointCoord, vec2(.5)) , 10.))  * vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863)/5. * vec3(texture2D(uTexture , vUv)) ,1.);
-${THREE.ShaderChunk.logdepthbuf_fragment}
-}
+    gl_FragColor = vec4(col/1.5 * clamp(abs(sin(uTime/10000.)),0.8,1.), 1.);
+  // gl_FragColor = vec4(vec3(pow(1. - distance(gl_PointCoord, vec2(.5)) , 10.))  * vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863)/5. * vec3(texture2D(uTexture , vUv)) ,1.);
+  ${THREE.ShaderChunk.logdepthbuf_fragment}
+  }
 `
 
 export { neonParticlesVertexShader, neonParticlesFragmentShader }

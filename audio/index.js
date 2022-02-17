@@ -21,6 +21,7 @@ const setupAudioContext = (audio) => {
     source = audioContext.createMediaElementSource(audio)
     volumeControl = audioContext.createGain()
     analyzer = audioContext.createAnalyser()
+    analyzer.fftSize = 512
     source.connect(volumeControl)
     analyzer.connect(audioContext.destination)
     volumeControl.connect(analyzer)
@@ -50,12 +51,46 @@ export const createAudio = ({ source, volume, autoPlay, currentTime }) => {
     audioHasBeenCreated = true
   }
 }
-export const getAudioFrequencies = (freqData) => {
-  // let frequency = freqData[20]
 
+export const getAudioFrequenciesByRange = ({
+  frequencyData,
+  horizontalRangeStart = 0,
+  horizontalRangeEnd = 255,
+  verticalRangeStart = 0,
+  verticalRangeEnd = 255,
+}) => {
+  // if (audio.currentTime <= 14.6) {
+  let rangeSum = 0
+  for (let i = horizontalRangeStart; i < horizontalRangeEnd; i++) {
+    rangeSum += frequencyData[i]
+  }
+
+  const average = rangeSum / (horizontalRangeEnd - horizontalRangeStart)
+
+  let factor1
+  if (average > verticalRangeStart) {
+    factor1 =
+      (average - verticalRangeStart) / (verticalRangeEnd - verticalRangeStart)
+    if (factor1 > 1) {
+      factor1 = 1
+    }
+    // console.log(factor1)
+  }
+
+  // const frequency = frequencyData[Math.round(10)]
+  
+  return factor1
+  // beatFactor = frequency > 140 ? frequency / 0.5 : frequency / 1.5
+}
+
+export const updateAudioThreshold = (frequencyData) => {
+  // } else {
+  //   audio.pause()
+  // }
+  // let frequency = frequencyData[20]
   // let threshold = 50 // vocals
   // let threshold = 5 // beat
-  let freqDataActive = []
+  const frequencyDataActive = []
 
   // if (Math.abs(threshold - lastThreshold) > 30) {
   //   accelerator = 2
@@ -65,25 +100,25 @@ export const getAudioFrequencies = (freqData) => {
 
   //   lastThreshold = threshold
 
-  for (let i = 0; i < freqData.length; i++) {
-    freqDataActive.push(freqData[i])
-    if (freqData[i] === 0 && i !== 0) {
+  for (let i = 0; i < frequencyData.length; i++) {
+    frequencyDataActive.push(frequencyData[i])
+    if (frequencyData[i] === 0 && i !== 0) {
       threshold = i - 1
       break
     }
   }
 
-  let average
-  let sum = 0
-  // let stageNumber = freqDataActive.length
-  let startingPoint = 0
-  let stageNumber = freqDataActive.length
-  for (let i = startingPoint; i < stageNumber; i++) {
-    sum += freqDataActive[i]
-    if (i == stageNumber - 1) {
-      average = sum / stageNumber
-    }
-  }
+  // let average
+  // let sum = 0
+  // // let stageNumber = frequencyDataActive.length
+  // let startingPoint = 0
+  // let stageNumber = frequencyDataActive.length
+  // for (let i = startingPoint; i < stageNumber; i++) {
+  //   sum += frequencyDataActive[i]
+  //   if (i == stageNumber - 1) {
+  //     average = sum / stageNumber
+  //   }
+  // }
 
   if (threshold == 0) {
     mood = 'silence'
@@ -103,13 +138,6 @@ export const getAudioFrequencies = (freqData) => {
   if (threshold < 200) {
     mood = 'superHigh'
   }
-
-  const frequency = freqData[Math.round(10)]
-
-  // let frequency = (average * 255) / 150 * 3
-  // console.log(average)
-  return frequency > 200 ? frequency / 0.5 : frequency / 1.5
-  // beatFactor = frequency > 140 ? frequency / 0.5 : frequency / 1.5
 }
 
 export const updateMoodArray = () => {
@@ -136,10 +164,12 @@ export const getThreshold = () => {
   return threshold
 }
 
-export const updateBeatFrequencies = () => {
+export const getFrequenciesByRange = (params) => {
   if (analyzer) {
-    const freqData = new Uint8Array(analyzer.frequencyBinCount)
-    analyzer.getByteFrequencyData(freqData)
-    return getAudioFrequencies(freqData)
+    const frequencyData = new Uint8Array(analyzer.frequencyBinCount)
+    analyzer.getByteFrequencyData(frequencyData)
+    params.frequencyData = frequencyData
+    updateAudioThreshold(frequencyData)
+    return getAudioFrequenciesByRange(params)
   }
 }
