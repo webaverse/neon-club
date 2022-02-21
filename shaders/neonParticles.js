@@ -198,7 +198,8 @@ const neonParticlesFragmentShader = `
     t.r += uBeat/6.;
     t.g += uBeat/7.;
     t.b += uBeat/8.;
-    vec3 col = vec3(pow(1. - distance(gl_PointCoord, vec2(.5)), 10.)) * t;
+    float circ =pow(1. - distance(gl_PointCoord, vec2(.5)), 10.);
+    vec3 col = circ * t;
     // if(uBeat >= 0.3) {
     //   col.r += 0.008 ;
     // }
@@ -210,9 +211,9 @@ const neonParticlesFragmentShader = `
     // }
     // col.r += sin(uBeat*1000.)/100.;
     // col.r += uBeat/10. ;
-    // gl_FragColor = vec4(col, 1.);
+    // gl_FragColor = vec4(col, circ);
 
-    gl_FragColor = vec4(col/1.5 * clamp(abs(sin(uTime/10000.)),0.8,1.), 1.);
+    gl_FragColor = vec4(col, 1.);
   // gl_FragColor = vec4(vec3(pow(1. - distance(gl_PointCoord, vec2(.5)) , 10.))  * vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863)/5. * vec3(texture2D(uTexture , vUv)) ,1.);
   ${THREE.ShaderChunk.logdepthbuf_fragment}
   }

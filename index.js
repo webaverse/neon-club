@@ -32,6 +32,10 @@ import {
   neonParticlesFragmentShader,
   neonParticlesVertexShader,
 } from './shaders/neonParticles.js'
+import {
+  masterPieceParticlesFragment,
+  masterPieceParticlesVertex,
+} from './shaders/masterPieceParticles.js'
 
 const { useApp, useLoaders, useFrame, useCleanup, usePhysics, useInternals } =
   metaversefile
@@ -78,7 +82,7 @@ export default (e) => {
     vertexShader: neonClubEmissiveVertexShader,
     fragmentShader: neonClubEmissiveFragmentShader,
     vertexColors: true,
-    transparent: true,
+    // transparent: true,
     side: THREE.DoubleSide,
     uniforms: {
       uTime: { value: 0 },
@@ -181,12 +185,39 @@ export default (e) => {
     })
   })
 
+  const masterPiece = new THREE.Points(
+    new THREE.PlaneBufferGeometry(5, 5, 60, 60),
+    new THREE.ShaderMaterial({
+      vertexShader: masterPieceParticlesVertex,
+      fragmentShader: masterPieceParticlesFragment,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexColors: true,
+      // wireframe:true,
+      transparent: true,
+      // side: THREE.DoubleSide,
+      uniforms: {
+        uTime: { value: 0 },
+        uBeat: { value: 0.5 },
+        uResolution: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uTexture: { value: null },
+        uSize: { value: 18 * gl.getPixelRatio() },
+      },
+    })
+  )
+  masterPiece.position.set(0, 33, 146.5)
+  masterPiece.rotation.x = Math.PI / 2
+  masterPiece.updateMatrixWorld()
+  // app.add(masterPiece)
+
   const neonParticles = new THREE.Points(
-    new THREE.TorusKnotBufferGeometry(100, 20, 100, 100),
+    new THREE.TorusKnotBufferGeometry(100, 20, 140, 140),
     new THREE.ShaderMaterial({
       vertexShader: neonParticlesVertexShader,
       fragmentShader: neonParticlesFragmentShader,
-      depthWrite: false,
+      // depthWrite: false,
       blending: THREE.AdditiveBlending,
       vertexColors: true,
       // wireframe:true,
@@ -382,13 +413,13 @@ export default (e) => {
     if (neonParticles) {
       if (beatFactor1) {
         // neonParticles.rotation.z -= 0.001 * beatFactor1
-        neonParticles.rotation.y -= 0.005 * beatFactor1
-        neonParticles.rotation.x -= 0.005 * beatFactor1
-        neonParticles.position.y -= 0.02 * beatFactor1
+        neonParticles.rotation.y -= 0.0005 * beatFactor1
+        neonParticles.rotation.x -= 0.0005 * beatFactor1
+        neonParticles.position.y -= 0.05 * beatFactor1
       }
       // neonParticles.rotation.z -= 0.001
-      neonParticles.rotation.y -= 0.006
-      neonParticles.rotation.x -= 0.001
+      neonParticles.rotation.y -= 0.0001
+      neonParticles.rotation.x -= 0.0001
       if (neonParticles.position.y > 50) {
         neonParticles.position.y -= 0.5
       } else {
