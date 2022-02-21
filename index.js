@@ -390,10 +390,18 @@ export default (e) => {
   const audioTrackInformation = {
     source: baseUrl + 'tracks/music.wav',
     autoPlay: true,
-    // currentTime: 14.2,
+    // currentTime: 100.2,
   }
   document.body.onkeyup = (e) => {
     if (e.code === 'Space') {
+      const audio = getAudio({ createOnCall: false })
+      if (audio.paused !== undefined) {
+        if (audio.paused) {
+          audio.play()
+        } else {
+          audio.pause()
+        }
+      }
       createAudio(audioTrackInformation)
     }
   }
