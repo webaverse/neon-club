@@ -1,4 +1,4 @@
-import { checkArrayEqualElements } from '../utils'
+import { checkArrayEqualElements } from '../utils/index.js'
 
 let audio = {}
 let audioHasBeenCreated = false

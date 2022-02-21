@@ -1,7 +1,5 @@
 import * as THREE from 'three'
 
-const glsl = (x) => x
-
 const neonParticlesVertexShader = `
       ${THREE.ShaderChunk.common}
       varying vec2 vUv;
@@ -160,6 +158,7 @@ void main() {
   newPosition.xz *= get2dRotateMatrix(angle1);
   float angle2 = sin(newPosition.z) * 2.;
   newPosition.xy *= get2dRotateMatrix(angle2);
+  newPosition.y += uBeat;
   vUv = uv;
 
   vec2 p = uv;
@@ -175,7 +174,7 @@ void main() {
   // vPattern =  vec3(1. - step(.5 , distance(gl_PointCoord, vec2(.5))));
   gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.);
   // gl_Position = projectedPosition;
-  gl_PointSize = uSize;
+  gl_PointSize = uSize * fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
   // gl_PointSize *= 1. / -viewPosition.z;
   ${THREE.ShaderChunk.logdepthbuf_vertex}
 }
@@ -195,6 +194,7 @@ const neonParticlesFragmentShader = `
   
   void main() {
     vec3 t = vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863) / 5. * vec3(texture2D(uTexture, vUv));
+    t*=2.;
     t.r += uBeat/6.;
     t.g += uBeat/7.;
     t.b += uBeat/8.;

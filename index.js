@@ -4,11 +4,13 @@
 /* eslint-disable linebreak-style */
 import metaversefile from 'metaversefile'
 import * as THREE from 'three'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
-import { camera, getComposer, getRenderer } from 'https://github.com/webaverse/app/blob/master/renderer.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+import { BlendShader } from 'three/examples/jsm/shaders/BlendShader.js'
+import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
+import { getComposer } from '../../renderer.js'
 import {
   createAudio,
   getFrequenciesByRange,
@@ -18,6 +20,10 @@ import {
 } from './audio/index.js'
 import { Earthquake } from './passes/Earthquake.js'
 import {
+  neonClubCyberLinesFragment,
+  neonClubCyberLinesVertex,
+} from './shaders/neonClubCyberLines.js'
+import {
   neonClubEmissiveFragmentShader,
   neonClubEmissiveVertexShader,
 } from './shaders/neonEmissive.js'
@@ -26,7 +32,8 @@ import {
   neonParticlesVertexShader,
 } from './shaders/neonParticles.js'
 
-const { useApp, useLoaders, useFrame, useCleanup, usePhysics } = metaversefile
+const { useApp, useLoaders, useFrame, useCleanup, usePhysics, useInternals } =
+  metaversefile
 
 const baseUrl = import.meta.url.replace(/(\/)[^\/\/]*$/, '$1')
 
@@ -52,11 +59,13 @@ let elapsedTime
 export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
+  console.log(useInternals())
 
-  // const scene = useScene()
+  const rootScene = useInternals().rootScene
+  const camera = useInternals().camera
   const composer = getComposer()
+  const gl = useInternals().renderer
   const physics = usePhysics()
-  const gl = getRenderer()
   gl.outputEncoding = THREE.sRGBEncoding
   const disposeMaterial = (obj) => {
     if (obj.material) {
@@ -78,6 +87,26 @@ export default (e) => {
       uTexture: { value: null },
     },
   })
+  neonClubCyberLinesMaterial = new THREE.ShaderMaterial({
+    vertexShader: neonClubCyberLinesVertex,
+    fragmentShader: neonClubCyberLinesFragment,
+    vertexColors: true,
+    // wireframe:true,
+    // transparent: true,
+    // side: THREE.DoubleSide,
+    uniforms: {
+      uTime: { value: 0 },
+      uBeat1: { value: 0 },
+      uBeat2: { value: 0 },
+      uMood: { value: new THREE.Vector3(1, 0, 0) },
+      uResolution: {
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
+      uTexture: { value: null },
+      uBeatMap1: { value: null },
+      uBeatMap2: { value: null },
+    },
+  })
 
   const loadModel = (params) => {
     return new Promise((resolve, reject) => {
@@ -89,25 +118,35 @@ export default (e) => {
         gltf.scene.traverse((child) => {
           if (child.isMesh) {
             child.material.side = THREE.DoubleSide
-
             // checking if the child is a wall
             if (
               child.material.name === 'Wall' ||
               child.material.name === 'Wall.001' ||
-              child.material.name === 'Wall 2'
+              child.material.name === 'Wall2'
             ) {
-              neonClubCyberLinesMaterial = child.material
               const emissiveMap = new THREE.TextureLoader().load(
                 baseUrl + 'textures/wall_Emissive.png'
               )
+              const beatMap1 = new THREE.TextureLoader().load(
+                baseUrl + 'textures/wall_Emissive rgb1.png'
+              )
+              const beatMap2 = new THREE.TextureLoader().load(
+                baseUrl + 'textures/wall_Emissive rgb2.png'
+              )
               emissiveMap.wrapS = emissiveMap.wrapT = THREE.RepeatWrapping
+              beatMap1.wrapS = beatMap1.wrapT = THREE.RepeatWrapping
+              beatMap2.wrapS = beatMap2.wrapT = THREE.RepeatWrapping
               emissiveMap.flipY = false
-              neonClubCyberLinesMaterial.emissiveIntensity = 0.4
-              neonClubCyberLinesMaterial.emissive = new THREE.Color('#e4ecf7')
-              neonClubCyberLinesMaterial.emissiveMap = emissiveMap
+              beatMap1.flipY = false
+              beatMap2.flipY = false
+              neonClubCyberLinesMaterial.uniforms.uTexture.value = emissiveMap
+              neonClubCyberLinesMaterial.uniforms.uBeatMap1.value = beatMap1
+              neonClubCyberLinesMaterial.uniforms.uBeatMap2.value = beatMap2
+              child.material = neonClubCyberLinesMaterial
+              child.layers.toggle(BLOOM_SCENE)
             }
             if (child.name === 'Cube133_2') {
-              child.material = new THREE.MeshNormalMaterial()
+              child.material = neonClubEmissiveMaterial
               child.layers.toggle(BLOOM_SCENE)
             }
             if (child.material.name === 'emasive') {
@@ -140,7 +179,7 @@ export default (e) => {
   })
 
   const neonParticles = new THREE.Points(
-    new THREE.SphereBufferGeometry(50, 50, 50),
+    new THREE.TorusKnotBufferGeometry(70, 20, 60, 60),
     new THREE.ShaderMaterial({
       vertexShader: neonParticlesVertexShader,
       fragmentShader: neonParticlesFragmentShader,
@@ -155,7 +194,7 @@ export default (e) => {
         uBeat: { value: 0.5 },
         uResolution: { value: new THREE.Vector2() },
         uTexture: { value: null },
-        uSize: { value: 5 * gl.getPixelRatio() },
+        uSize: { value: 10 * gl.getPixelRatio() },
       },
     })
   )
@@ -166,10 +205,12 @@ export default (e) => {
       neonParticles.material.uniforms.uTexture.value = texture
     }
   )
-
-  neonParticles.position.set(-0.008638, 135.57, 6.5135)
+  // neonParticles.scale.set(1, 1, 1)
+  neonParticles.position.set(0, 140, 145)
 
   app.add(neonParticles)
+
+  // console.log();
 
   new THREE.TextureLoader().load(baseUrl + 'textures/smoke.png', (texture) => {
     cloudGeo = new THREE.PlaneBufferGeometry(100, 100)
@@ -179,6 +220,7 @@ export default (e) => {
       // side: THREE.BackSide,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      color: '#535d6a',
     })
     cloudMaterial2 = new THREE.MeshLambertMaterial({
       map: texture,
@@ -186,6 +228,7 @@ export default (e) => {
       // side: THREE.BackSide,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      color: '#535d6a',
     })
     cloudMaterial3 = new THREE.MeshLambertMaterial({
       map: texture,
@@ -193,6 +236,7 @@ export default (e) => {
       // side: THREE.BackSide,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      color: '#535d6a',
     })
     cloudMaterial4 = new THREE.MeshLambertMaterial({
       map: texture,
@@ -200,6 +244,7 @@ export default (e) => {
       // side: THREE.BackSide,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
+      color: '#535d6a',
     })
     const addClouds = (pos, material, array) => {
       for (let p = 0; p < 20; p++) {
@@ -212,9 +257,10 @@ export default (e) => {
         // cloud.rotation.y = -0.12
         // cloud.rotation.x = 1.16
         cloud.rotation.z = Math.random() * 2 * Math.PI
-        cloud.material.opacity = 0.3
+        cloud.material.opacity = 0.2
         array.push(cloud)
         cloud.updateMatrixWorld()
+        cloud.layers.toggle(BLOOM_SCENE)
         app.add(cloud)
       }
     }
@@ -242,15 +288,16 @@ export default (e) => {
   app.add(blueLight)
 
   // effects
-  const renderScene = new RenderPass(app, camera)
+  const renderScene = composer.passes[0]
   const bloomPass = new UnrealBloomPass(
     new THREE.Vector2(window.innerWidth, window.innerHeight),
-    1.1,
-    0.4,
-    0.4
+    1.2,
+    0.3,
+    0.5
   )
   const bloomComposer = new EffectComposer(gl)
   bloomComposer.renderToScreen = false
+  console.log(composer)
   bloomComposer.addPass(renderScene)
   bloomComposer.addPass(bloomPass)
   const finalPass = new ShaderPass(
@@ -279,13 +326,7 @@ export default (e) => {
   const BLOOM_SCENE = 1
   const bloomLayer = new THREE.Layers()
   bloomLayer.set(BLOOM_SCENE)
-
   neonParticles.layers.toggle(BLOOM_SCENE)
-
-  cloudParticles1.forEach((cloud) => {
-    cloud.layers.toggle(BLOOM_SCENE)
-  })
-
   const darkenNonBloomed = (obj) => {
     if (obj.isMesh && bloomLayer.test(obj.layers) === false) {
       materials[obj.uuid] = obj.material
@@ -335,66 +376,69 @@ export default (e) => {
   }
 
   useFrame(({ timestamp }) => {
-    // if (neonParticles) {
-    //   neonParticles.rotation.z -= 0.00035
-    //   neonParticles.rotation.y += 0.00035
-    //   neonParticles.rotation.x += 0.0004
-    //   neonParticles.updateMatrixWorld()
-    // }
+    if (neonParticles) {
+      if (beatFactor1) {
+        // neonParticles.rotation.z -= 0.001 * beatFactor1
+        neonParticles.rotation.y -= 0.005 * beatFactor1
+        neonParticles.rotation.x -= 0.005 * beatFactor1
+      }
+      // neonParticles.rotation.z -= 0.001
+      neonParticles.rotation.y -= 0.001
+      neonParticles.rotation.x -= 0.001
+      neonParticles.updateMatrixWorld()
+    }
 
     elapsedTime = timestamp
     const threshold = getThreshold()
     updateMoodArray()
     logMood()
     if (neonClub) {
-      neonParticles.rotation.z += 0.02
       neonParticles.material.uniforms.uTime.value = elapsedTime
       neonClubEmissiveMaterial.uniforms.uTime.value = elapsedTime
+      neonClubCyberLinesMaterial.uniforms.uTime.value = elapsedTime
 
       const moodChanger = (threshold + 1) / 256
       const moodChangerColor = [
-        moodChanger + 0.1,
-        0.3 + moodChanger / 10,
-        Math.abs(0.8 - moodChanger),
+        moodChanger + 0.1 + (beatFactor3 ? beatFactor3 / 50 : 0),
+        0.3 + moodChanger / 10 + (beatFactor2 ? beatFactor2 / 40 : 0),
+        Math.abs(0.8 - moodChanger) + (beatFactor1 ? beatFactor1 / 30 : 0),
       ]
-      if (neonClubCyberLinesMaterial) {
-        neonClubCyberLinesMaterial.emissiveIntensity = 1
-        neonClubCyberLinesMaterial.emissive = new THREE.Color(
-          ...moodChangerColor
-        )
-        neonClubCyberLinesMaterial.needsUpdate = true
-      }
+      neonClubCyberLinesMaterial.uniforms.uMood.value = new THREE.Vector3(
+        ...moodChangerColor
+      )
       neonClubEmissiveMaterial.uniforms.uMood.value = new THREE.Vector3(
         ...moodChangerColor
       )
       if (beatFactor1) {
         cloudMaterial1.color = new THREE.Color(
-          moodChangerColor[0] + beatFactor1 / 30,
-          moodChangerColor[1] + beatFactor1 / 22,
-          moodChangerColor[2] + beatFactor1 / 30
+          (moodChangerColor[0] + beatFactor1 / 30) / 5,
+          (moodChangerColor[1] + beatFactor1 / 22) / 5,
+          (moodChangerColor[2] + beatFactor1 / 30) / 5
         )
         neonParticles.material.uniforms.uBeat.value = beatFactor1
         neonClubEmissiveMaterial.uniforms.uBeat.value = beatFactor1
+        neonClubCyberLinesMaterial.uniforms.uBeat1.value = beatFactor1
+        neonClubCyberLinesMaterial.uniforms.uBeat2.value = beatFactor3
       }
       if (beatFactor2) {
         cloudMaterial2.color = new THREE.Color(
-          moodChangerColor[1] + beatFactor2 / 22,
-          moodChangerColor[0] + beatFactor2 / 30,
-          moodChangerColor[2] + beatFactor2 / 30
+          (moodChangerColor[1] + beatFactor2 / 22) / 5,
+          (moodChangerColor[0] + beatFactor2 / 30) / 5,
+          (moodChangerColor[2] + beatFactor2 / 30) / 5
         )
       }
       if (beatFactor3) {
         cloudMaterial3.color = new THREE.Color(
-          moodChangerColor[0] - beatFactor3 / 30,
-          moodChangerColor[1] + beatFactor3 / 25,
-          moodChangerColor[2] + beatFactor3 / 30
+          (moodChangerColor[0] - beatFactor3 / 30) / 5,
+          (moodChangerColor[1] + beatFactor3 / 25) / 5,
+          (moodChangerColor[2] + beatFactor3 / 30) / 5
         )
       }
       if (beatFactor4) {
         cloudMaterial4.color = new THREE.Color(
-          moodChangerColor[0] - beatFactor4 / 30,
-          moodChangerColor[1] + beatFactor4 / 24,
-          moodChangerColor[2] + beatFactor4 / 32
+          (moodChangerColor[0] - beatFactor4 / 30) / 5,
+          (moodChangerColor[1] + beatFactor4 / 24) / 5,
+          (moodChangerColor[2] + beatFactor4 / 32) / 5
         )
       }
 
@@ -433,10 +477,12 @@ export default (e) => {
       verticalRangeEnd: 100,
     })
 
-    console.log(beatFactor3)
+    // console.log(beatFactor3)
     renderBloom(true)
   })
   useCleanup(() => {
+    composer.removePass(finalPass)
+    composer.removePass(earthquakePass)
     for (const physicsId of physicsIds) {
       physics.removeGeometry(physicsId)
     }
