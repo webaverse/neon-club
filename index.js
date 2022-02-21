@@ -13,6 +13,7 @@ import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
 import { getComposer } from '../../renderer.js'
 import {
   createAudio,
+  getAudio,
   getFrequenciesByRange,
   getThreshold,
   logMood,
@@ -160,7 +161,9 @@ export default (e) => {
         })
         const physicsId = physics.addGeometry(gltf.scene)
         physicsIds.push(physicsId)
-        gltf.scene.position.set(0, 0, 0)
+        // gltf.scene.position.set(0, 0, 0)
+        // gltf.scene.rotation.set(Math.PI, 0, 0)
+        // gltf.scene.updateMatrixWorld()
         resolve(gltf.scene)
       })
     })
@@ -179,7 +182,7 @@ export default (e) => {
   })
 
   const neonParticles = new THREE.Points(
-    new THREE.TorusKnotBufferGeometry(70, 20, 60, 60),
+    new THREE.TorusKnotBufferGeometry(100, 20, 100, 100),
     new THREE.ShaderMaterial({
       vertexShader: neonParticlesVertexShader,
       fragmentShader: neonParticlesFragmentShader,
@@ -194,7 +197,7 @@ export default (e) => {
         uBeat: { value: 0.5 },
         uResolution: { value: new THREE.Vector2() },
         uTexture: { value: null },
-        uSize: { value: 10 * gl.getPixelRatio() },
+        uSize: { value: 8 * gl.getPixelRatio() },
       },
     })
   )
@@ -381,10 +384,16 @@ export default (e) => {
         // neonParticles.rotation.z -= 0.001 * beatFactor1
         neonParticles.rotation.y -= 0.005 * beatFactor1
         neonParticles.rotation.x -= 0.005 * beatFactor1
+        neonParticles.position.y -= 0.02 * beatFactor1
       }
       // neonParticles.rotation.z -= 0.001
-      neonParticles.rotation.y -= 0.001
+      neonParticles.rotation.y -= 0.006
       neonParticles.rotation.x -= 0.001
+      if (neonParticles.position.y > 50) {
+        neonParticles.position.y -= 0.5
+      } else {
+        neonParticles.position.y = 160
+      }
       neonParticles.updateMatrixWorld()
     }
 

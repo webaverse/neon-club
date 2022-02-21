@@ -194,7 +194,7 @@ const neonParticlesFragmentShader = `
   
   void main() {
     vec3 t = vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863) / 5. * vec3(texture2D(uTexture, vUv));
-    t*=2.;
+    t/=2.;
     t.r += uBeat/6.;
     t.g += uBeat/7.;
     t.b += uBeat/8.;
