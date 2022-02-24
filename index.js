@@ -4,13 +4,14 @@
 /* eslint-disable linebreak-style */
 import metaversefile from 'metaversefile'
 import * as THREE from 'three'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
-import { BlendShader } from 'three/examples/jsm/shaders/BlendShader.js'
-import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
-import { getComposer } from '../../renderer.js'
+// import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+// import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+// import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
+// import { BlendShader } from 'three/examples/jsm/shaders/BlendShader.js'
+// import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js'
+// import { getComposer } from '../../renderer.js'
+// import { Earthquake } from './passes/Earthquake.js'
 import {
   createAudio,
   getAudio,
@@ -19,7 +20,6 @@ import {
   logMood,
   updateMoodArray,
 } from './audio/index.js'
-import { Earthquake } from './passes/Earthquake.js'
 import {
   neonClubCyberLinesFragment,
   neonClubCyberLinesVertex,
@@ -64,20 +64,20 @@ let elapsedTime
 export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
-  console.log(useInternals())
+  // console.log(useInternals())
 
-  const rootScene = useInternals().rootScene
-  const camera = useInternals().camera
-  const composer = getComposer()
+  // const rootScene = useInternals().rootScene
+  // const camera = useInternals().camera
+  // const composer = getComposer()
   const gl = useInternals().renderer
   const physics = usePhysics()
   gl.outputEncoding = THREE.sRGBEncoding
-  const disposeMaterial = (obj) => {
-    if (obj.material) {
-      obj.material.dispose()
-    }
-  }
-  app.traverse(disposeMaterial)
+  // const disposeMaterial = (obj) => {
+  //   if (obj.material) {
+  //     obj.material.dispose()
+  //   }
+  // }
+  // app.traverse(disposeMaterial)
   neonClubEmissiveMaterial = new THREE.ShaderMaterial({
     vertexShader: neonClubEmissiveVertexShader,
     fragmentShader: neonClubEmissiveFragmentShader,
@@ -148,18 +148,18 @@ export default (e) => {
               neonClubCyberLinesMaterial.uniforms.uBeatMap1.value = beatMap1
               neonClubCyberLinesMaterial.uniforms.uBeatMap2.value = beatMap2
               child.material = neonClubCyberLinesMaterial
-              child.layers.toggle(BLOOM_SCENE)
+              // child.layers.toggle(BLOOM_SCENE)
             }
             if (child.name === 'Cube133_2') {
               child.material = neonClubEmissiveMaterial
-              child.layers.toggle(BLOOM_SCENE)
+              // child.layers.toggle(BLOOM_SCENE)
             }
             if (child.material.name === 'emasive') {
               emasiveArray.push(child)
             }
             emasiveArray.forEach((child) => {
               child.material = neonClubEmissiveMaterial
-              child.layers.toggle(BLOOM_SCENE)
+              // child.layers.toggle(BLOOM_SCENE)
             })
           }
         })
@@ -294,7 +294,7 @@ export default (e) => {
         cloud.material.opacity = 0.2
         array.push(cloud)
         cloud.updateMatrixWorld()
-        cloud.layers.toggle(BLOOM_SCENE)
+        // cloud.layers.toggle(BLOOM_SCENE)
         app.add(cloud)
       }
     }
@@ -322,69 +322,69 @@ export default (e) => {
   app.add(blueLight)
 
   // effects
-  const renderScene = composer.passes[0]
-  const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight),
-    1.2,
-    0.3,
-    0.5
-  )
-  const bloomComposer = new EffectComposer(gl)
-  bloomComposer.renderToScreen = false
-  console.log(composer)
-  bloomComposer.addPass(renderScene)
-  bloomComposer.addPass(bloomPass)
-  const finalPass = new ShaderPass(
-    new THREE.ShaderMaterial({
-      uniforms: {
-        baseTexture: { value: null },
-        bloomTexture: { value: bloomComposer.renderTarget2.texture },
-      },
-      vertexShader: `varying vec2 vUv;void main() {vUv = uv;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );}
-      `,
-      fragmentShader: `
-      uniform sampler2D baseTexture; uniform sampler2D bloomTexture; varying vec2 vUv; void main() { gl_FragColor = ( texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv ) );}
-      `,
-    }),
-    'baseTexture'
-  )
-  composer.addPass(finalPass)
-  const earthquakePass = new Earthquake()
-  composer.addPass(earthquakePass)
+  // const renderScene = composer.passes[0]
+  // const bloomPass = new UnrealBloomPass(
+  //   new THREE.Vector2(window.innerWidth, window.innerHeight),
+  //   1.2,
+  //   0.3,
+  //   0.5
+  // )
+  // const bloomComposer = new EffectComposer(gl)
+  // bloomComposer.renderToScreen = false
+  // console.log(composer)
+  // bloomComposer.addPass(renderScene)
+  // bloomComposer.addPass(bloomPass)
+  // const finalPass = new ShaderPass(
+  //   new THREE.ShaderMaterial({
+  //     uniforms: {
+  //       baseTexture: { value: null },
+  //       bloomTexture: { value: bloomComposer.renderTarget2.texture },
+  //     },
+  //     vertexShader: `varying vec2 vUv;void main() {vUv = uv;gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );}
+  //     `,
+  //     fragmentShader: `
+  //     uniform sampler2D baseTexture; uniform sampler2D bloomTexture; varying vec2 vUv; void main() { gl_FragColor = ( texture2D( baseTexture, vUv ) + vec4( 1.0 ) * texture2D( bloomTexture, vUv ) );}
+  //     `,
+  //   }),
+  //   'baseTexture'
+  // )
+  // composer.addPass(finalPass)
+  // const earthquakePass = new Earthquake()
+  // composer.addPass(earthquakePass)
 
   // selective bloom
 
-  const darkMaterial = new THREE.MeshBasicMaterial({ color: 'black' })
-  const materials = {}
-  const ENTIRE_SCENE = 0
-  const BLOOM_SCENE = 1
-  const bloomLayer = new THREE.Layers()
-  bloomLayer.set(BLOOM_SCENE)
-  neonParticles.layers.toggle(BLOOM_SCENE)
-  const darkenNonBloomed = (obj) => {
-    if (obj.isMesh && bloomLayer.test(obj.layers) === false) {
-      materials[obj.uuid] = obj.material
-      obj.material = darkMaterial
-    }
-  }
-  const restoreMaterial = (obj) => {
-    if (materials[obj.uuid]) {
-      obj.material = materials[obj.uuid]
-      delete materials[obj.uuid]
-    }
-  }
+  // const darkMaterial = new THREE.MeshBasicMaterial({ color: 'black' })
+  // const materials = {}
+  // const ENTIRE_SCENE = 0
+  // const BLOOM_SCENE = 1
+  // const bloomLayer = new THREE.Layers()
+  // bloomLayer.set(BLOOM_SCENE)
+  // neonParticles.layers.toggle(BLOOM_SCENE)
+  // const darkenNonBloomed = (obj) => {
+  //   if (obj.isMesh && bloomLayer.test(obj.layers) === false) {
+  //     materials[obj.uuid] = obj.material
+  //     obj.material = darkMaterial
+  //   }
+  // }
+  // const restoreMaterial = (obj) => {
+  //   if (materials[obj.uuid]) {
+  //     obj.material = materials[obj.uuid]
+  //     delete materials[obj.uuid]
+  //   }
+  // }
 
-  const renderBloom = (mask) => {
-    if (mask === true) {
-      app.traverse(darkenNonBloomed)
-      bloomComposer.render()
-      app.traverse(restoreMaterial)
-    } else {
-      camera.layers.set(BLOOM_SCENE)
-      bloomComposer.render()
-      camera.layers.set(ENTIRE_SCENE)
-    }
-  }
+  // const renderBloom = (mask) => {
+  //   if (mask === true) {
+  //     app.traverse(darkenNonBloomed)
+  //     bloomComposer.render()
+  //     app.traverse(restoreMaterial)
+  //   } else {
+  //     camera.layers.set(BLOOM_SCENE)
+  //     bloomComposer.render()
+  //     camera.layers.set(ENTIRE_SCENE)
+  //   }
+  // }
 
   // creating audio with space bar click
   const audioTrackInformation = {
@@ -393,7 +393,7 @@ export default (e) => {
     // currentTime: 100.2,
   }
   document.body.onkeyup = (e) => {
-    if (e.code === 'Space') {
+    if (e.code === 'KeyM') {
       const audio = getAudio({ createOnCall: false })
       if (audio.paused !== undefined) {
         if (audio.paused) {
@@ -498,7 +498,7 @@ export default (e) => {
       // console.log(moodChanger)
     }
     // shaking the scene with beat
-    earthquakePass.factor = beatFactor1 / 4
+    // earthquakePass.factor = beatFactor1 / 4
 
     beatFactor1 = getFrequenciesByRange({
       horizontalRangeStart: 208,
@@ -526,7 +526,7 @@ export default (e) => {
     })
 
     // console.log(beatFactor3)
-    renderBloom(true)
+    // renderBloom(true)
   })
   useCleanup(() => {
     composer.removePass(finalPass)
