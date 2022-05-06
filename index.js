@@ -393,7 +393,7 @@ export default (e) => {
     // currentTime: 100.2,
   }
   document.body.onkeyup = (e) => {
-    if (e.code === 'KeyM') {
+    if (e.code === 'KeyP') {
       const audio = getAudio({ createOnCall: false })
       if (audio.paused !== undefined) {
         if (audio.paused) {
