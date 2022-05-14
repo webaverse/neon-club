@@ -529,8 +529,8 @@ export default (e) => {
     // renderBloom(true)
   })
   useCleanup(() => {
-    composer.removePass(finalPass)
-    composer.removePass(earthquakePass)
+    // composer.removePass(finalPass)
+    // composer.removePass(earthquakePass)
     for (const physicsId of physicsIds) {
       physics.removeGeometry(physicsId)
     }
