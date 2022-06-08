@@ -395,8 +395,8 @@ export default (e) => {
   }
   document.body.onkeyup = (e) => {
     if (e.code === 'KeyM') {
-      console.log("m pressed");
       const audio = getAudio({ createOnCall: false })
+      console.log("m pressed"), audio;
       if (audio.paused !== undefined) {
         if (audio.paused) {
           audio.play()
