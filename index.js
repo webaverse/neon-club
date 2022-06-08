@@ -1,4 +1,4 @@
-// Local Version//
+// github Version//
 /* eslint-disable arrow-parens */
 /* eslint-disable semi */
 /* eslint-disable object-curly-spacing */
@@ -395,12 +395,14 @@ export default (e) => {
   }
   document.body.onkeyup = (e) => {
     if (e.code === 'KeyM') {
+      console.log("m pressed");
       const audio = getAudio({ createOnCall: false })
       if (audio.paused !== undefined) {
         if (audio.paused) {
           audio.play()
         } else {
           audio.pause()
+          console.log("paused");
         }
       }
       createAudio(audioTrackInformation)
@@ -410,6 +412,7 @@ export default (e) => {
   const updateClouds = (array, rotation, beatFactor) => {
     array.forEach((cloud) => {
       if (beatFactor) {
+        console.log(beatFactor);
         cloud.rotation.z *= 1 + beatFactor / 10000
         cloud.position.y += Math.sin((elapsedTime * beatFactor) / 8000000)
       }
