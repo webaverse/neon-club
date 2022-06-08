@@ -497,7 +497,7 @@ export default (e) => {
       updateClouds(cloudParticles2, 0.0004, beatFactor2)
       updateClouds(cloudParticles3, 0.00025, beatFactor3)
       updateClouds(cloudParticles4, -0.0003, beatFactor4)
-      console.log(beatFactor1);
+      console.log(audioTrackInformation);
       // directionalLight.color = new THREE.Color(...moodChangerColor)
       // console.log(moodChanger)
     }
