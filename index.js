@@ -412,7 +412,6 @@ export default (e) => {
   const updateClouds = (array, rotation, beatFactor) => {
     array.forEach((cloud) => {
       if (beatFactor) {
-        console.log(beatFactor);
         cloud.rotation.z *= 1 + beatFactor / 10000
         cloud.position.y += Math.sin((elapsedTime * beatFactor) / 8000000)
       }
@@ -498,6 +497,7 @@ export default (e) => {
       updateClouds(cloudParticles2, 0.0004, beatFactor2)
       updateClouds(cloudParticles3, 0.00025, beatFactor3)
       updateClouds(cloudParticles4, -0.0003, beatFactor4)
+      console.log(beatFactor1);
       // directionalLight.color = new THREE.Color(...moodChangerColor)
       // console.log(moodChanger)
     }
