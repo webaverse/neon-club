@@ -393,6 +393,8 @@ export default (e) => {
     autoPlay: true,
     // currentTime: 100.2,
   }
+
+  // play the ^above audio or pause it
   document.body.onkeyup = (e) => {
     if (e.code === 'KeyM') {
       const audio = getAudio({ createOnCall: false })
@@ -408,6 +410,14 @@ export default (e) => {
       createAudio(audioTrackInformation)
     }
   }
+
+
+
+
+
+
+
+
 
   const updateClouds = (array, rotation, beatFactor) => {
     array.forEach((cloud) => {
@@ -443,6 +453,7 @@ export default (e) => {
     const threshold = getThreshold()
     updateMoodArray()
     logMood()
+    
     if (neonClub) {
       neonParticles.material.uniforms.uTime.value = elapsedTime
       neonClubEmissiveMaterial.uniforms.uTime.value = elapsedTime
@@ -454,12 +465,15 @@ export default (e) => {
         0.3 + moodChanger / 10 + (beatFactor2 ? beatFactor2 / 40 : 0),
         Math.abs(0.8 - moodChanger) + (beatFactor1 ? beatFactor1 / 30 : 0),
       ]
+      // match the wall lines with to the music base on above
       neonClubCyberLinesMaterial.uniforms.uMood.value = new THREE.Vector3(
         ...moodChangerColor
       )
+      // match the outside emissive sections with the music based on above
       neonClubEmissiveMaterial.uniforms.uMood.value = new THREE.Vector3(
         ...moodChangerColor
       )
+      // whenever there is a high match the cloud to a colour based R~3+1, G~2+1, B~1+1
       if (beatFactor1) {
         cloudMaterial1.color = new THREE.Color(
           (moodChangerColor[0] + beatFactor1 / 30) / 5,
@@ -497,31 +511,39 @@ export default (e) => {
       updateClouds(cloudParticles2, 0.0004, beatFactor2)
       updateClouds(cloudParticles3, 0.00025, beatFactor3)
       updateClouds(cloudParticles4, -0.0003, beatFactor4)
-      console.log(audioTrackInformation);
+      console.log(beatFactor1);
       // directionalLight.color = new THREE.Color(...moodChangerColor)
       // console.log(moodChanger)
     }
     // shaking the scene with beat
     // earthquakePass.factor = beatFactor1 / 4
 
+
+
+
+    // getting the audio out put in the given frequencies
+    //high
     beatFactor1 = getFrequenciesByRange({
       horizontalRangeStart: 208,
       horizontalRangeEnd: 216,
       verticalRangeStart: 45,
       verticalRangeEnd: 65,
     })
+    //low
     beatFactor2 = getFrequenciesByRange({
       horizontalRangeStart: 85,
       horizontalRangeEnd: 93,
       verticalRangeStart: 50,
       verticalRangeEnd: 70,
     })
+    // mid low
     beatFactor3 = getFrequenciesByRange({
       horizontalRangeStart: 100,
       horizontalRangeEnd: 108,
       verticalRangeStart: 150,
       verticalRangeEnd: 170,
     })
+    // mid high
     beatFactor4 = getFrequenciesByRange({
       horizontalRangeStart: 140,
       horizontalRangeEnd: 148,
