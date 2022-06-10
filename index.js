@@ -389,7 +389,7 @@ export default (e) => {
 
   // creating audio with space bar click
   const audioTrackInformation = {
-    source: 'https://res.cloudinary.com/musixdevelop/video/upload/track-audios/Sad.mp',
+    source: 'https://res.cloudinary.com/musixdevelop/video/upload/track-audios/Sad.mp3',
     autoPlay: true,
     // currentTime: 100.2,
   }
