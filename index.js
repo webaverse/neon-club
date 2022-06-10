@@ -396,7 +396,7 @@ export default (e) => {
 
   // play the ^above audio or pause it
   document.body.onkeyup = (e) => {
-    if (e.code === 'KeyM') {
+    if (e.code === 'Digit1') {
       const audio = getAudio({ createOnCall: false })
       console.log("m pressed"), audio;
       if (audio.paused !== undefined) {
