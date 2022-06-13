@@ -211,10 +211,6 @@ export default (e) => {
     })
   }
 
-  const neonClubInfo = {
-    fileName: 'neonclub.glb',
-    filePath: baseUrl + 'models/',
-  }
   const speakerInfo ={
     fileName: 'react-Speaker.glb',
     filePath: baseUrl + 'models/',
@@ -227,13 +223,19 @@ export default (e) => {
   Promise.all([sPromise1]);
   Promise.all([sPromise2]);
   
-  const neonClub = loadModel(neonClubInfo);
 
-  Promise.all([neonClub]).then((values) => {
-    values.forEach((model) => {
-      app.add(model)
-    })
-  })
+  
+  const neonClubInfo = {
+    fileName: 'neonclub.glb',
+    filePath: baseUrl + 'models/',
+  }
+  // const neonClub = loadModel(neonClubInfo);
+
+  // Promise.all([neonClub]).then((values) => {
+  //   values.forEach((model) => {
+  //     app.add(model)
+  //   })
+  // })
 
   const masterPiece = new THREE.Points(
     new THREE.PlaneBufferGeometry(5, 5, 60, 60),
