@@ -178,6 +178,10 @@ export default (e) => {
     fileName: 'neonclub.glb',
     filePath: baseUrl + 'models/',
   }
+  const speakerInfo ={
+    fileName: 'react-Speaker.glb',
+    filePath: baseUrl + 'models/',
+  }
   const neonClub = loadModel(neonClubInfo)
 
   Promise.all([neonClub]).then((values) => {
@@ -396,7 +400,7 @@ export default (e) => {
 
   // play the ^above audio or pause it
   document.body.onkeyup = (e) => {
-    if (e.code === 'Digit1') {
+    if (e.code === 'Digit2') {
       const audio = getAudio({ createOnCall: false })
       console.log("m pressed"), audio;
       if (audio.paused !== undefined) {
@@ -521,7 +525,7 @@ export default (e) => {
 
 
 
-    // getting the audio out put in the given frequencies
+    // getting the audio output in the given frequencies
     //high
     beatFactor1 = getFrequenciesByRange({
       horizontalRangeStart: 208,
