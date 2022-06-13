@@ -113,36 +113,38 @@ export default (e) => {
       uBeatMap2: { value: null },
     },
   })
-  const loadSpeakers = (params, pos) =>{
-    const u = params.filePath + params.fileName;
-    speaker = new Promise((accept, reject) => {
-        const {gltfLoader} = useLoaders();
-        gltfLoader.load(u, accept, function onprogress() {}, reject);
-        
-  });
-    // speaker.scene.traverse(o => {
-    //   if (o.isMesh) {
-    //     // o.morphTargetInfluences[0] = 1;
-    //     reactWoofer = o.morphTargetInfluences[0];
-    //     reactMid = o.morphTargetInfluences[1];
-    //     console.log(o.morphTargetInfluences[0]);
-    //   }
-    //   if(o.name === 'Woofer') {  console.log("found woofer") }
-    // });
-    // scale and insert into scene
-    speaker.scene.scale.set(params.obScale);
-    speaker.scene.position.set(pos);
-    speaker.scene.quaternion.set(obQuarternion);
-    app.add(speaker.scene);
-    let physicsId;
-    physicsId = physics.addGeometry(speaker.scene);
-    physicsIds.push(physicsId);
+  async function loadSpeakers(pos){
+      const u = `${baseUrl}/react-speaker.glb`;
+      speaker = await new Promise((accept, reject) => {
+          const {gltfLoader} = useLoaders();
+          gltfLoader.load(u, accept, function onprogress() {}, reject);
+          
+      });
+      // speaker.scene.traverse(o => {
+      //   if (o.isMesh) {
+      //     // o.morphTargetInfluences[0] = 1;
+      //     reactWoofer = o.morphTargetInfluences[0];
+      //     reactMid = o.morphTargetInfluences[1];
+      //     console.log(o.morphTargetInfluences[0]);
+      //   }
+      //   if(o.name === 'Woofer') {  console.log("found woofer") }
+      // });
+      // scale and insert into scene
+      speaker.scene.scale.set(4,4,4);
+      speaker.scene.position.set(pos);
+      speaker.scene.quaternion.set(0,1,0,0);
+      app.add(speaker.scene);
+      let physicsId;
+      physicsId = physics.addGeometry(speaker.scene);
+      physicsIds.push(physicsId);
 
 
-    // update world
-    app.updateMatrixWorld();
+      // update world
+      app.updateMatrixWorld();
+      //console.log(speaker.scene, speaker);
+
+  };
     
-  }
 
   const loadModel = (params) => {
     return new Promise((resolve, reject) => {
@@ -214,12 +216,14 @@ export default (e) => {
     obQuarternion: new THREE.Vector4(0,1,0,0),
     obScale: new THREE.Vector3(4,4,4),
   }
-  const speaker1 = loadSpeakers(speakerInfo, new THREE.Vector3(83,5,43));
-  const speaker2 = loadSpeakers(speakerInfo, new THREE.Vector3(45,5,43));
-  const neonClub = loadModel(neonClubInfo);
+  const speaker1 = loadSpeakers(new THREE.Vector3(83,5,43));
+  const speaker2 = loadSpeakers(new THREE.Vector3(45,5,43));
 
   Promise.all([speaker1]);
   Promise.all([speaker2]);
+
+  
+  const neonClub = loadModel(neonClubInfo);
 
   Promise.all([neonClub]).then((values) => {
     values.forEach((model) => {
