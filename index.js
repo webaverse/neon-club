@@ -115,7 +115,7 @@ export default (e) => {
   })
   const loadSpeakers = (params, pos) =>{
     const u = params.filePath + params.fileName;
-    return new Promise((accept, reject) => {
+    speaker = new Promise((accept, reject) => {
         const {gltfLoader} = useLoaders();
         gltfLoader.load(u, accept, function onprogress() {}, reject);
         
