@@ -118,7 +118,7 @@ export default (e) => {
       uBeatMap2: { value: null },
     },
   })
-  async function loadSpeakers(pos){
+  async function loadSpeakers(){
       const u = `${baseUrl}models/react-Speaker.glb`;
       return new Promise((resolve, reject) => {
           const {gltfLoader} = useLoaders();
@@ -126,12 +126,13 @@ export default (e) => {
 
 
             speaker.scene.scale.set(4,4,4);
-            speaker.scene.position.set(pos);
+            speaker.scene.position.set(83,5,43);
             speaker.scene.quaternion.set(0,1,0,0);
             //app.add(speaker.scene);
             let physicsId;
             physicsId = physics.addGeometry(speaker.scene);
             physicsIds.push(physicsId);
+            console.log("loaded");
 
             resolve(speaker.scene);
 
@@ -225,7 +226,7 @@ export default (e) => {
     obQuarternion: new THREE.Vector4(0,1,0,0),
     obScale: new THREE.Vector3(4,4,4),
   }
-  const sPromise1 = loadSpeakers(new THREE.Vector3(83,5,43));
+  const sPromise1 = loadSpeakers();
   // const sPromise2 = loadSpeakers(new THREE.Vector3(45,5,43));
 
   Promise.all([sPromise1]).then((values) => {
