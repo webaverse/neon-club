@@ -118,28 +118,59 @@ export default (e) => {
       uBeatMap2: { value: null },
     },
   })
-  async function loadSpeakers(){
-      const u = `${baseUrl}models/react-Speaker.glb`;
-      return new Promise((resolve, reject) => {
-          const {gltfLoader} = useLoaders();
-          gltfLoader.load(u, (speaker) =>{
+  // async function loadSpeakers(){
+  //     const u = `${baseUrl}models/react-Speaker.glb`;
+  //     return new Promise((resolve, reject) => {
+  //         const {gltfLoader} = useLoaders();
+  //         gltfLoader.load(u, (speaker) =>{
 
 
-            speaker.scene.scale.set(4,4,4);
-            speaker.scene.position.set(83,5,43);
-            speaker.scene.quaternion.set(0,1,0,0);
-            //app.add(speaker.scene);
-            let physicsId;
-            physicsId = physics.addGeometry(speaker.scene);
-            physicsIds.push(physicsId);
-            console.log("loaded");
+  //           speaker.scene.scale.set(4,4,4);
+  //           speaker.scene.position.set(83,5,43);
+  //           speaker.scene.quaternion.set(0,1,0,0);
+  //           //app.add(speaker.scene);
+  //           let physicsId;
+  //           physicsId = physics.addGeometry(speaker.scene);
+  //           physicsIds.push(physicsId);
+  //           console.log("loaded");
 
-            resolve(speaker.scene);
+  //           resolve(speaker.scene);
 
 
-          });
+  //         });
           
-      });
+  //     });
+  (async () => {
+    const u = `${baseUrl}/react-speaker.glb`;
+    speaker = await new Promise((accept, reject) => {
+        const {gltfLoader} = useLoaders();
+        gltfLoader.load(u, accept, function onprogress() {}, reject);
+        
+    });
+    // speaker.scene.traverse(o => {
+    //   if (o.isMesh) {
+    //     // o.morphTargetInfluences[0] = 1;
+    //     reactWoofer = o.morphTargetInfluences[0];
+    //     reactMid = o.morphTargetInfluences[1];
+    //     console.log(o.morphTargetInfluences[0]);
+    //   }
+    //   if(o.name === 'Woofer') {  console.log("found woofer") }
+    // });
+    // scale and insert into scene
+    speaker.scene.scale.set(4,4,4);
+    speaker.scene.position.set( 15, 0, 10);
+    speaker.scene.quaternion.set(0,1,0,0);
+    app.add(speaker.scene);
+    let physicsId;
+    physicsId = physics.addGeometry(speaker.scene);
+    physicsIds.push(physicsId);
+
+
+    // update world
+    app.updateMatrixWorld();
+    //console.log(speaker.scene, speaker);
+
+    })();
       // speaker.scene.traverse(o => {
       //   if (o.isMesh) {
       //     // o.morphTargetInfluences[0] = 1;
@@ -157,7 +188,7 @@ export default (e) => {
       // app.updateMatrixWorld();
       //console.log(speaker.scene, speaker);
 
-  };
+  // };
     
 
   const loadModel = (params) => {
@@ -220,20 +251,20 @@ export default (e) => {
     })
   }
 
-  const speakerInfo ={
-    fileName: 'react-Speaker.glb',
-    filePath: baseUrl + 'models/',
-    obQuarternion: new THREE.Vector4(0,1,0,0),
-    obScale: new THREE.Vector3(4,4,4),
-  }
-  const sPromise1 = loadSpeakers();
-  // const sPromise2 = loadSpeakers(new THREE.Vector3(45,5,43));
+  // const speakerInfo ={
+  //   fileName: 'react-Speaker.glb',
+  //   filePath: baseUrl + 'models/',
+  //   obQuarternion: new THREE.Vector4(0,1,0,0),
+  //   obScale: new THREE.Vector3(4,4,4),
+  // }
+  // const sPromise1 = loadSpeakers();
+  // // const sPromise2 = loadSpeakers(new THREE.Vector3(45,5,43));
 
-  Promise.all([sPromise1]).then((values) => {
-    values.forEach((model)=>{
-      app.add(model)
-    })
-  });
+  // Promise.all([sPromise1]).then((values) => {
+  //   values.forEach((model)=>{
+  //     app.add(model)
+  //   })
+  // });
   // Promise.all([sPromise2]);
   
 
@@ -242,13 +273,13 @@ export default (e) => {
     fileName: 'neonclub.glb',
     filePath: baseUrl + 'models/',
   }
-  // const neonClub = loadModel(neonClubInfo);
+  const neonClub = loadModel(neonClubInfo);
 
-  // Promise.all([neonClub]).then((values) => {
-  //   values.forEach((model) => {
-  //     app.add(model)
-  //   })
-  // })
+  Promise.all([neonClub]).then((values) => {
+    values.forEach((model) => {
+      app.add(model)
+    })
+  })
 
   const masterPiece = new THREE.Points(
     new THREE.PlaneBufferGeometry(5, 5, 60, 60),
