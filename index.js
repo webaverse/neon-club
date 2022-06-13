@@ -65,7 +65,7 @@ let elapsedTime
 export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
-  let speaker = new THREE.Object3D();
+  //let speaker = new THREE.Object3D();
   let speaker1 = new THREE.Object3D();
   let speaker2 = new THREE.Object3D();
   // let speake3 = new THREE.Object3D();
@@ -120,9 +120,23 @@ export default (e) => {
   })
   async function loadSpeakers(pos){
       const u = `${baseUrl}models/react-Speaker.glb`;
-      speaker = await new Promise((accept, reject) => {
+      return new Promise((resolve, reject) => {
           const {gltfLoader} = useLoaders();
-          gltfLoader.load(u, accept, function onprogress() {}, reject);
+          gltfLoader.load(u, (speaker) =>{
+
+
+            speaker.scene.scale.set(4,4,4);
+            speaker.scene.position.set(pos);
+            speaker.scene.quaternion.set(0,1,0,0);
+            //app.add(speaker.scene);
+            let physicsId;
+            physicsId = physics.addGeometry(speaker.scene);
+            physicsIds.push(physicsId);
+
+            resolve(speaker.scene);
+
+
+          });
           
       });
       // speaker.scene.traverse(o => {
@@ -135,17 +149,11 @@ export default (e) => {
       //   if(o.name === 'Woofer') {  console.log("found woofer") }
       // });
       // scale and insert into scene
-      speaker.scene.scale.set(4,4,4);
-      speaker.scene.position.set(pos);
-      speaker.scene.quaternion.set(0,1,0,0);
-      app.add(speaker.scene);
-      let physicsId;
-      physicsId = physics.addGeometry(speaker.scene);
-      physicsIds.push(physicsId);
+   
 
 
       // update world
-      app.updateMatrixWorld();
+      // app.updateMatrixWorld();
       //console.log(speaker.scene, speaker);
 
   };
@@ -218,10 +226,14 @@ export default (e) => {
     obScale: new THREE.Vector3(4,4,4),
   }
   const sPromise1 = loadSpeakers(new THREE.Vector3(83,5,43));
-  const sPromise2 = loadSpeakers(new THREE.Vector3(45,5,43));
+  // const sPromise2 = loadSpeakers(new THREE.Vector3(45,5,43));
 
-  Promise.all([sPromise1]);
-  Promise.all([sPromise2]);
+  Promise.all([sPromise1]).then((values) => {
+    values.forEach((model)=>{
+      app.add(model)
+    })
+  });
+  // Promise.all([sPromise2]);
   
 
   
