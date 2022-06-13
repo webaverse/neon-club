@@ -114,7 +114,7 @@ export default (e) => {
     },
   })
   async function loadSpeakers(pos){
-      const u = `${baseUrl}react-speaker.glb`;
+      const u = `${baseUrl}models/react-speaker.glb`;
       speaker = await new Promise((accept, reject) => {
           const {gltfLoader} = useLoaders();
           gltfLoader.load(u, accept, function onprogress() {}, reject);
