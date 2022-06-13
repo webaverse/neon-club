@@ -134,12 +134,12 @@ export default (e) => {
       //   if(o.name === 'Woofer') {  console.log("found woofer") }
       // });
       // scale and insert into scene
-      speaker.scene.scale.set(4,4,4);
-      speaker.scene.position.set(pos);
-      speaker.scene.quaternion.set(0,1,0,0);
-      app.add(speaker.scene);
+      object.scene.scale.set(4,4,4);
+      object.scene.position.set(pos);
+      object.scene.quaternion.set(0,1,0,0);
+      app.add(object.scene);
       let physicsId;
-      physicsId = physics.addGeometry(speaker.scene);
+      physicsId = physics.addGeometry(object.scene);
       physicsIds.push(physicsId);
 
 
