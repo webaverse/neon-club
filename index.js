@@ -65,6 +65,7 @@ let elapsedTime
 export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
+  let speaker = new THREE.Object3D();
   let speaker1 = new THREE.Object3D();
   let speaker2 = new THREE.Object3D();
   // let speake3 = new THREE.Object3D();
@@ -117,9 +118,9 @@ export default (e) => {
       uBeatMap2: { value: null },
     },
   })
-  async function loadSpeakers(object, pos){
+  async function loadSpeakers(pos){
       const u = `${baseUrl}models/react-Speaker.glb`;
-      object = await new Promise((accept, reject) => {
+      speaker = await new Promise((accept, reject) => {
           const {gltfLoader} = useLoaders();
           gltfLoader.load(u, accept, function onprogress() {}, reject);
           
@@ -134,12 +135,12 @@ export default (e) => {
       //   if(o.name === 'Woofer') {  console.log("found woofer") }
       // });
       // scale and insert into scene
-      object.scene.scale.set(4,4,4);
-      object.scene.position.set(pos);
-      object.scene.quaternion.set(0,1,0,0);
-      app.add(object.scene);
+      speaker.scene.scale.set(4,4,4);
+      speaker.scene.position.set(pos);
+      speaker.scene.quaternion.set(0,1,0,0);
+      app.add(speaker.scene);
       let physicsId;
-      physicsId = physics.addGeometry(object.scene);
+      physicsId = physics.addGeometry(speaker.scene);
       physicsIds.push(physicsId);
 
 
@@ -220,8 +221,8 @@ export default (e) => {
     obQuarternion: new THREE.Vector4(0,1,0,0),
     obScale: new THREE.Vector3(4,4,4),
   }
-  const sPromise1 = loadSpeakers(speaker1, new THREE.Vector3(83,5,43));
-  const sPromise2 = loadSpeakers(speaker2, new THREE.Vector3(45,5,43));
+  const sPromise1 = loadSpeakers(new THREE.Vector3(83,5,43));
+  const sPromise2 = loadSpeakers(new THREE.Vector3(45,5,43));
 
   Promise.all([sPromise1]);
   Promise.all([sPromise2]);
