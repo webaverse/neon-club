@@ -119,6 +119,7 @@ export default (e) => {
         const {gltfLoader} = useLoaders();
         gltfLoader.load(u, accept, function onprogress() {}, reject);
         
+  });
     // speaker.scene.traverse(o => {
     //   if (o.isMesh) {
     //     // o.morphTargetInfluences[0] = 1;
@@ -141,7 +142,6 @@ export default (e) => {
     // update world
     app.updateMatrixWorld();
     
-  });
   }
 
   const loadModel = (params) => {
@@ -218,16 +218,8 @@ export default (e) => {
   const speaker2 = loadSpeakers(speakerInfo, new THREE.Vector3(45,5,43));
   const neonClub = loadModel(neonClubInfo);
 
-  Promise.all([speaker1]).then((values) =>{
-    values.forEach((model) => {
-      app.add(model)
-    })
-  })
-  Promise.all([speaker2]).then((values) =>{
-    values.forEach((model) => {
-      app.add(model)
-    })
-  })
+  Promise.all([speaker1]);
+  Promise.all([speaker2]);
 
   Promise.all([neonClub]).then((values) => {
     values.forEach((model) => {
