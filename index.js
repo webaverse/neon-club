@@ -114,7 +114,7 @@ export default (e) => {
     },
   })
   const loadSpeakers = (params, pos) =>{
-    const u = `${baseUrl}/react-speaker.glb`;
+    const u = params.filePath + params.fileName;
     return new Promise((accept, reject) => {
         const {gltfLoader} = useLoaders();
         gltfLoader.load(u, accept, function onprogress() {}, reject);
