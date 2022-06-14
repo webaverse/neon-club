@@ -66,17 +66,12 @@ let beatSpeakerBass
 let reactWoofer
 let reactMid
 
-// //faeries
-// let pulseAnimation = false
-// let pulseNumber = 1
-// let pulseNumber2 = 1
-
 export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
   let speakers = [];
   // const rootScene = useInternals().rootScene
-  // const camera = useInternals().camera //faeries
+  // const camera = useInternals().camera
   // const composer = getComposer()
   const gl = useInternals().renderer
   const physics = usePhysics()
@@ -115,6 +110,7 @@ export default (e) => {
       uBeatMap2: { value: null },
     },
   })
+
   const loadModel = (params) => {
     return new Promise((resolve, reject) => {
       const { gltfLoader } = useLoaders()
@@ -424,7 +420,7 @@ export default (e) => {
   //     camera.layers.set(ENTIRE_SCENE)
   //   }
   // }
-  
+
   // creating audio with space bar click
   const audioTrackInformation = {
     source: 'https://res.cloudinary.com/musixdevelop/video/upload/track-audios/Sad.mp3',
@@ -484,7 +480,8 @@ export default (e) => {
     elapsedTime = timestamp
     const threshold = getThreshold()
     updateMoodArray()
-    logMood()    
+    logMood()
+    
     if (neonClub) {
       neonParticles.material.uniforms.uTime.value = elapsedTime
       neonClubEmissiveMaterial.uniforms.uTime.value = elapsedTime
@@ -529,7 +526,6 @@ export default (e) => {
           (moodChangerColor[1] + beatFactor3 / 25) / 5,
           (moodChangerColor[2] + beatFactor3 / 30) / 5
         )
-        }
       }
       if (beatFactor4) {
         cloudMaterial4.color = new THREE.Color(
