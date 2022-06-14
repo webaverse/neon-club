@@ -171,8 +171,9 @@ export default (e) => {
             if (child.name === 'Speaker_1'){
               console.log(child);
               gltf.scene.scale.set(4,4,4);
-              gltf.scene.position.set(params.speakerPos.value);
-              gltf.scene.quaternion.set(params.speakerQuat);
+              //works with hardcoded values
+              gltf.scene.position.copy(params.speakerPos.value);
+              gltf.scene.quaternion.copy(params.speakerQuat);
             }
           }
         })
