@@ -172,7 +172,7 @@ export default (e) => {
               console.log(child);
               gltf.scene.scale.set(4,4,4);
               //works with hardcoded values
-              gltf.scene.position.copy(params.speakerPos.value);
+              gltf.scene.position.copy(params.speakerPos);
               gltf.scene.quaternion.copy(params.speakerQuat);
             }
           }
