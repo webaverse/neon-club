@@ -126,6 +126,7 @@ export default (e) => {
       gltfLoader.setDRACOLoader(dracoLoader).setCrossOrigin('anonymous')
 
       gltfLoader.load(params.filePath + params.fileName, (gltf) => {
+        console.log(gltf);
         gltf.scene.traverse((child) => {
           if (child.isMesh) {
             child.material.side = THREE.DoubleSide
@@ -168,9 +169,10 @@ export default (e) => {
               // child.layers.toggle(BLOOM_SCENE)
             })
             if (child.name === 'Speaker_1'){
+              console.log(child);
               gltf.scene.scale.set(4,4,4);
               gltf.scene.position.set(45,5,43);
-              gltf.scene.quarternion.set(0,1,0,0);
+              gltf.scene.quaternion.set(0,1,0,0);
             }
           }
         })
