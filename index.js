@@ -171,8 +171,8 @@ export default (e) => {
             if (child.name === 'Speaker_1'){
               console.log(child);
               gltf.scene.scale.set(4,4,4);
-              gltf.scene.position.set(45,5,43);
-              gltf.scene.quaternion.set(0,1,0,0);
+              gltf.scene.position.set(params.position);
+              gltf.scene.quaternion.set(params.quaternion);
             }
           }
         })
@@ -197,15 +197,29 @@ export default (e) => {
       app.add(model)
     })
   })
-  const speakerInfo = {
+  const speaker1Info = {
     fileName: 'react-Speaker.glb',
     filePath: baseUrl + 'models/',
     position: new THREE.Vector3(45,5,43),
-    quarternion: new THREE.Vector4(0,1,0,0),
+    quaternion: new THREE.Vector4(0,1,0,0),
   }
-  const vizSpeaker = loadModel(speakerInfo);
+  const vizSpeaker1 = loadModel(speaker1Info);
 
-  Promise.all([vizSpeaker]).then((values) => {
+  Promise.all([vizSpeaker1]).then((values) => {
+    values.forEach((model) => {
+      console.log("loaded speaker");
+      app.add(model)
+    })
+  })
+  const speakerInfo2 = {
+    fileName: 'react-Speaker.glb',
+    filePath: baseUrl + 'models/',
+    position: new THREE.Vector3(83,5,43),
+    quaternion: new THREE.Vector4(0,1,0,0),
+  }
+  const vizSpeaker2 = loadModel(speakerInfo2);
+
+  Promise.all([vizSpeaker2]).then((values) => {
     values.forEach((model) => {
       console.log("loaded speaker");
       app.add(model)
