@@ -43,7 +43,6 @@ const { useApp, useLoaders, useFrame, useCleanup, usePhysics, useInternals } =
 const baseUrl = import.meta.url.replace(/(\/)[^\/\/]*$/, '$1')
 
 let physicsIds = []
-let emasiveArray = []
 let neonClubEmissiveMaterial
 let neonClubCyberLinesMaterial
 let cloudGeo
@@ -155,12 +154,8 @@ export default (e) => {
               // child.layers.toggle(BLOOM_SCENE)
             }
             if (child.material.name === 'emasive') {
-              emasiveArray.push(child)
-            }
-            emasiveArray.forEach((child) => {
               child.material = neonClubEmissiveMaterial
-              // child.layers.toggle(BLOOM_SCENE)
-            })
+            }
           }
         })
         const physicsId = physics.addGeometry(gltf.scene)
@@ -242,7 +237,7 @@ export default (e) => {
   // neonParticles.scale.set(1, 1, 1)
   neonParticles.position.set(0, 140, 145)
 
-  app.add(neonParticles)
+  // app.add(neonParticles)
 
   // console.log();
 
@@ -298,25 +293,25 @@ export default (e) => {
         app.add(cloud)
       }
     }
-    addClouds([20, -23, 42], cloudMaterial1, cloudParticles1)
-    addClouds([-20, -29, 40], cloudMaterial2, cloudParticles2)
-    addClouds([40, -20, 45], cloudMaterial3, cloudParticles3)
-    addClouds([-50, -25, 34], cloudMaterial4, cloudParticles4)
+    // addClouds([20, -23, 42], cloudMaterial1, cloudParticles1)
+    // addClouds([-20, -29, 40], cloudMaterial2, cloudParticles2)
+    // addClouds([40, -20, 45], cloudMaterial3, cloudParticles3)
+    // addClouds([-50, -25, 34], cloudMaterial4, cloudParticles4)
   })
 
-  const directionalLight = new THREE.DirectionalLight('#283feb', 0.01)
+  const directionalLight = new THREE.DirectionalLight('#283feb', 0.001)
   directionalLight.position.set(0, 0, 1)
   directionalLight.updateMatrixWorld()
   app.add(directionalLight)
-  const orangeLight = new THREE.PointLight('#247cf0', 2, 100, 0.1)
+  const orangeLight = new THREE.PointLight('#247cf0', 2, 100, 0.01)
   orangeLight.position.set(2, 3, 1)
   orangeLight.updateMatrixWorld()
-  app.add(orangeLight)
-  const redLight = new THREE.PointLight('#f08624', 2, 100, 0.1)
+  // app.add(orangeLight)
+  const redLight = new THREE.PointLight('#f08624', 2, 100, 0.01)
   redLight.position.set(1, 3, 1)
   redLight.updateMatrixWorld()
   app.add(redLight)
-  const blueLight = new THREE.PointLight('#3891f0', 2, 100, 0.1)
+  const blueLight = new THREE.PointLight('#3891f0', 0.1, 100, 0.01)
   blueLight.position.set(3, 3, 2)
   blueLight.updateMatrixWorld()
   app.add(blueLight)
