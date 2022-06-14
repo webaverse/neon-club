@@ -126,7 +126,6 @@ export default (e) => {
       gltfLoader.setDRACOLoader(dracoLoader).setCrossOrigin('anonymous')
 
       gltfLoader.load(params.filePath + params.fileName, (gltf) => {
-        console.log(gltf);
         gltf.scene.traverse((child) => {
           if (child.isMesh) {
             child.material.side = THREE.DoubleSide
@@ -168,6 +167,11 @@ export default (e) => {
               child.material = neonClubEmissiveMaterial
               // child.layers.toggle(BLOOM_SCENE)
             })
+            if (child.name === 'Speaker_1'){
+              gltf.scene.scale.set(4,4,4);
+              gltf.scene.position.set(45,5,43);
+              gltf.scene.quarternion.set(0,1,0,0);
+            }
           }
         })
         const physicsId = physics.addGeometry(gltf.scene)
@@ -194,6 +198,8 @@ export default (e) => {
   const speakerInfo = {
     fileName: 'react-Speaker.glb',
     filePath: baseUrl + 'models/',
+    position: new THREE.Vector3(45,5,43),
+    quarternion: new THREE.Vector4(0,1,0,0),
   }
   const vizSpeaker = loadModel(speakerInfo);
 
