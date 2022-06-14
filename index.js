@@ -61,6 +61,10 @@ let beatFactor2
 let beatFactor3
 let beatFactor4
 let elapsedTime
+let beatSpeakerHi
+let beatSpeakerBass
+let reactWoofer
+let reactMid
 
 export default (e) => {
   const app = useApp()
@@ -210,22 +214,23 @@ export default (e) => {
     values.forEach((model) => {
       console.log("loaded speaker");
       app.add(model)
+      console.log(model);
     })
   })
-  const speakerInfo2 = {
-    fileName: 'react-Speaker.glb',
-    filePath: baseUrl + 'models/',
-    position: new THREE.Vector3(83,5,43),
-    quaternion: new THREE.Vector4(0,1,0,0),
-  }
-  const vizSpeaker2 = loadModel(speakerInfo2);
+  // const speakerInfo2 = {
+  //   fileName: 'react-Speaker.glb',
+  //   filePath: baseUrl + 'models/',
+  //   position: new THREE.Vector3(83,5,43),
+  //   quaternion: new THREE.Vector4(0,1,0,0),
+  // }
+  // const vizSpeaker2 = loadModel(speakerInfo2);
 
-  Promise.all([vizSpeaker2]).then((values) => {
-    values.forEach((model) => {
-      console.log("loaded speaker");
-      app.add(model)
-    })
-  })
+  // Promise.all([vizSpeaker2]).then((values) => {
+  //   values.forEach((model) => {
+  //     app.add(model)
+  //     console.log(model);
+  //   })
+  // })
 
   const masterPiece = new THREE.Points(
     new THREE.PlaneBufferGeometry(5, 5, 60, 60),
@@ -560,7 +565,44 @@ export default (e) => {
     // earthquakePass.factor = beatFactor1 / 4
 
 
+    // apply the factors to the morphs
+    if (beatSpeakerHi){
+      reactWoofer = beatSpeakerHi;
+      // console.log(reactWoofer);
+    };
+    if (beatSpeakerBass){
+      reactMid = beatSpeakerBass;
+      // console.log(reactMid);
+    };
+    //console.log(speaker.scene.isMesh());
+    if (speaker.scene){
+    speaker.scene.traverse(o => {
+      if (o.isMesh) {
+        o.morphTargetInfluences[0] = reactWoofer;
+        o.morphTargetInfluences[1] = reactMid;
+        //console.log(o.morphTargetInfluences[0], o.morphTargetInfluences[1], beatFactorSuperLow);
+      }
+    })
 
+
+
+
+
+
+
+    //SpeakerFactors
+    beatSpeakerHi = getFrequenciesByRange({
+      horizontalRangeStart: 80,
+      horizontalRangeEnd: 108,
+      verticalRangeStart: 140,
+      verticalRangeEnd: 170,
+    });
+    beatSpeakerBass = getFrequenciesByRange({
+      horizontalRangeStart: 30,
+      horizontalRangeEnd: 60,
+      verticalRangeStart: 60,
+      verticalRangeEnd: 140,
+    });
 
     // getting the audio output in the given frequencies
     //high
