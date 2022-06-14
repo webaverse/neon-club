@@ -575,7 +575,7 @@ export default (e) => {
       // console.log(reactMid);
     };
     //console.log(speaker.scene.isMesh());
-    if (speaker.scene){
+    // if (speaker.scene){
     speaker.scene.traverse(o => {
       if (o.isMesh) {
         o.morphTargetInfluences[0] = reactWoofer;
