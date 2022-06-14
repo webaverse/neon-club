@@ -66,12 +66,17 @@ let beatSpeakerBass
 let reactWoofer
 let reactMid
 
+//faeries
+let pulseAnimation = false
+let pulseNumber = 1
+let pulseNumber2 = 1
+
 export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
   let speakers = [];
   // const rootScene = useInternals().rootScene
-  // const camera = useInternals().camera
+  const camera = useInternals().camera //faeries
   // const composer = getComposer()
   const gl = useInternals().renderer
   const physics = usePhysics()
@@ -110,6 +115,19 @@ export default (e) => {
       uBeatMap2: { value: null },
     },
   })
+
+  ///faeries
+  const disposeMaterial = (obj) => {
+    if (obj.material) {
+      obj.material.dispose()
+    }
+  }
+
+
+
+
+
+
 
   const loadModel = (params) => {
     return new Promise((resolve, reject) => {
@@ -420,6 +438,361 @@ export default (e) => {
   //     camera.layers.set(ENTIRE_SCENE)
   //   }
   // }
+  //faeries
+  const faerieMasterpieceGeometry = new THREE.BoxBufferGeometry(6, 6, 6, 5, 5, 5)
+  const faerieMasterpieceMaterial = new THREE.ShaderMaterial({
+    vertexShader: faerieMasterpieceParticlesVertex,
+    fragmentShader: faerieMasterpieceParticlesFragment,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    vertexColors: true,
+    // wireframe:true,
+    transparent: true,
+    // side: THREE.DoubleSide,
+    uniforms: {
+      uTime: { value: 0 },
+      uBeat: { value: 0.5 },
+      uMood: { value: new THREE.Vector3(1, 2, 1) },
+      uResolution: {
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
+      uTexture: { value: null },
+      uSize: { value: 9 * gl.getPixelRatio() },
+    },
+  })
+
+  const faerieMasterpiece = new THREE.Points(faerieMasterpieceGeometry, faerieMasterpieceMaterial)
+  // const wireframe = new THREE.LineSegments(
+  //   faerieMasterpieceGeometry,
+  //   faerieMasterpieceMaterial
+  // )
+  // faerieMasterpiece.add(wireframe)
+  faerieMasterpiece.scale.set(0.99, 0.99, 0.99)
+  faerieMasterpiece.position.set(0, 1, 0)
+  faerieMasterpiece.rotation.x = Math.PI / 2
+  faerieMasterpiece.updateMatrixWorld()
+
+  app.add(faerieMasterpiece)
+
+  // const roomGeometry = new THREE.BoxBufferGeometry(30, 5, 5, 100, 100, 100)
+  const roomGeometry = new THREE.PlaneBufferGeometry(6, 6, 500, 500)
+  const roomWireframeGeometry = new THREE.BoxBufferGeometry(
+    30,
+    7,
+    7,
+    20,
+    20,
+    20
+  )
+  const roomMaterial = new THREE.ShaderMaterial({
+    vertexShader: roomVertex,
+    fragmentShader: roomFragment,
+    // depthWrite: false,
+    // blending: THREE.AdditiveBlending,
+    vertexColors: true,
+    // wireframe:true,
+    // transparent: true,
+    // side: THREE.BackSide,
+    uniforms: {
+      uTime: { value: 0 },
+      uPulse: { value: -2 },
+      uPulse2: { value: -2 },
+      uBeat: { value: 0.5 },
+      uMood: { value: new THREE.Vector3(0.1, 0.2, 0.6) },
+      uResolution: {
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
+      uTexture: { value: null },
+      // uSize: { value: 4 * gl.getPixelRatio() },
+    },
+  })
+  const roomWireframeMaterial = new THREE.ShaderMaterial({
+    vertexShader: roomVertex,
+    fragmentShader: roomWireframeFragment,
+    // depthWrite: false,
+    // blending: THREE.AdditiveBlending,
+    vertexColors: true,
+    // wireframe:true,
+    transparent: true,
+    side: THREE.BackSide,
+    uniforms: {
+      uTime: { value: 0 },
+      uBeat: { value: 0.5 },
+      uMood: { value: new THREE.Vector3(0.1, 0.2, 0.6) },
+      uResolution: {
+        value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+      },
+      uTexture: { value: null },
+      // uSize: { value: 4 * gl.getPixelRatio() },
+    },
+  })
+
+  const room = new THREE.Mesh(roomGeometry, roomMaterial)
+
+  // room.rotation.z += Math.PI / 2
+  // room.rotation.x += Math.PI / 4
+  // room.rotation.y += Math.PI / 4
+  room.position.set(0, 2.5, -3)
+  room.updateMatrixWorld()
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(100, 100),
+    new THREE.MeshBasicMaterial()
+  )
+  ground.rotation.x -= Math.PI / 2
+  ground.position.y -= 1
+  // const groundPhysicsId = physics.addGeometry(ground)
+  // physicsIds.push(groundPhysicsId)
+  const wireframe = new THREE.LineSegments(
+    roomWireframeGeometry,
+    roomWireframeMaterial
+  )
+  // wireframe.scale.set(0.999, 0.999, 0.999)
+  wireframe.position.set(0, 2.5, 0)
+  wireframe.updateMatrixWorld()
+  // room.add(wireframe)
+  // app.add(room)
+
+  const sphere = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(2.5, 1000, 1000),
+    new THREE.ShaderMaterial({
+      vertexShader: sphereVertex,
+      fragmentShader: sphereFragment,
+      // depthWrite: false,
+      // blending: THREE.AdditiveBlending,
+      vertexColors: true,
+      // wireframe:true,
+      // transparent: true,
+      // side: THREE.BackSide,
+      uniforms: {
+        uTime: { value: 0 },
+        uPulse: { value: -2 },
+        uPulse2: { value: -2 },
+        uBeat: { value: 0.5 },
+        uMood: { value: new THREE.Vector3(0.1, 0.2, 0.6) },
+        uResolution: {
+          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+        },
+        uTexture: { value: null },
+        // uSize: { value: 4 * gl.getPixelRatio() },
+      },
+    })
+  )
+  sphere.position.set(1, 2, 20)
+  sphere.rotation.y = Math.PI
+  sphere.updateMatrixWorld()
+
+/////
+
+//faeries  curls
+ // curve
+ function computeCurl(x, y, z) {
+  var eps = 0.0001
+
+  var curl = new THREE.Vector3()
+
+  //Find rate of change in YZ plane
+  var n1 = simplex3D(x, y + eps, z)
+  var n2 = simplex3D(x, y - eps, z)
+  //Average to find approximate derivative
+  var a = (n1 - n2) / (2 * eps)
+  var n1 = simplex3D(x, y, z + eps)
+  var n2 = simplex3D(x, y, z - eps)
+  //Average to find approximate derivative
+  var b = (n1 - n2) / (2 * eps)
+  curl.x = a - b
+
+  //Find rate of change in XZ plane
+  n1 = simplex3D(x, y, z + eps)
+  n2 = simplex3D(x, y, z - eps)
+  a = (n1 - n2) / (2 * eps)
+  n1 = simplex3D(x + eps, y, z)
+  n2 = simplex3D(x - eps, y, z)
+  b = (n1 - n2) / (2 * eps)
+  curl.y = a - b
+
+  //Find rate of change in XY plane
+  n1 = simplex3D(x + eps, y, z)
+  n2 = simplex3D(x - eps, y, z)
+  a = (n1 - n2) / (2 * eps)
+  n1 = simplex3D(x, y + eps, z)
+  n2 = simplex3D(x, y - eps, z)
+  b = (n1 - n2) / (2 * eps)
+  curl.z = a - b
+
+  return curl
+}
+
+const getCurve = (start) => {
+  const points = []
+  points.push(start)
+  const currentPoint = start.clone()
+  for (let i = 0; i < 50; i++) {
+    const v = computeCurl(currentPoint.x, currentPoint.y, currentPoint.z)
+    currentPoint.addScaledVector(v, 0.001)
+    points.push(currentPoint.clone())
+  }
+  return points
+}
+
+/////
+
+
+
+// curve mats
+const curveMat = new THREE.ShaderMaterial({
+  vertexShader: sphereVertex,
+  fragmentShader: sphereFragment,
+  // depthWrite: false,
+  // blending: THREE.AdditiveBlending,
+  vertexColors: true,
+  // wireframe:true,
+  // transparent: true,
+  // side: THREE.BackSide,
+  uniforms: {
+    uTime: { value: 0 },
+    uPulse: { value: -2 },
+    uPulse2: { value: -2 },
+    uBeat: { value: 0.5 },
+    uMood: { value: new THREE.Vector3(0.1, 0.2, 0.6) },
+    uResolution: {
+      value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+    },
+    uTexture: { value: null },
+    // uSize: { value: 4 * gl.getPixelRatio() },
+  },
+})
+const curveMat1 = new THREE.ShaderMaterial({
+  vertexShader: sphereVertex,
+  fragmentShader: sphereFragment1,
+  // depthWrite: false,
+  // blending: THREE.AdditiveBlending,
+  vertexColors: true,
+  // wireframe:true,
+  // transparent: true,
+  // side: THREE.BackSide,
+  uniforms: {
+    uTime: { value: 0 },
+    uPulse: { value: -2 },
+    uPulse2: { value: -2 },
+    uBeat: { value: 0.5 },
+    uMood: { value: new THREE.Vector3(0.1, 0.2, 0.6) },
+    uResolution: {
+      value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+    },
+    uTexture: { value: null },
+    // uSize: { value: 4 * gl.getPixelRatio() },
+  },
+})
+const curveMat2 = new THREE.ShaderMaterial({
+  vertexShader: sphereVertex,
+  fragmentShader: sphereFragment2,
+  // depthWrite: false,
+  // blending: THREE.AdditiveBlending,
+  vertexColors: true,
+  // wireframe:true,
+  // transparent: true,
+  // side: THREE.BackSide,
+  uniforms: {
+    uTime: { value: 0 },
+    uPulse: { value: -2 },
+    uPulse2: { value: -2 },
+    uBeat: { value: 0.5 },
+    uMood: { value: new THREE.Vector3(0.1, 0.2, 0.6) },
+    uResolution: {
+      value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+    },
+    uTexture: { value: null },
+    // uSize: { value: 4 * gl.getPixelRatio() },
+  },
+})
+
+
+// Curves
+for (let i = 0; i < 100; i++) {
+  const path = new THREE.CatmullRomCurve3(
+    getCurve(
+      new THREE.Vector3(
+        Math.random() - 0.5,
+        Math.random() - 0.5,
+        Math.random() - 0.5
+      )
+    )
+  )
+  const curveGeo = new THREE.TubeBufferGeometry(path, 50, 0.002, 8, false)
+  const curve = new THREE.Mesh(curveGeo, curveMat)
+  curve.scale.set(2, 96, 96)
+  curve.rotation.z = Math.PI/2
+  curve.updateMatrixWorld()
+  app.add(curve)
+}
+for (let i = 0; i < 200; i++) {
+  const path = new THREE.CatmullRomCurve3(
+    getCurve(
+      new THREE.Vector3(
+        Math.random() - 0.5,
+        Math.random() - 0.5,
+        Math.random() - 0.5
+      )
+    )
+  )
+  const curveGeo = new THREE.TubeBufferGeometry(path, 50, 0.001, 8, false)
+  const curve = new THREE.Mesh(curveGeo, curveMat1)
+  curve.scale.set(2, 120, 120)
+  curve.rotation.z = Math.PI/2
+  curve.updateMatrixWorld()
+  app.add(curve)
+}
+for (let i = 0; i < 100; i++) {
+  const path = new THREE.CatmullRomCurve3(
+    getCurve(
+      new THREE.Vector3(
+        Math.random() - 0.5,
+        Math.random() - 0.5,
+        Math.random() - 0.5
+      )
+    )
+  )
+  const curveGeo = new THREE.TubeBufferGeometry(path, 50, 0.001, 8, false)
+  const curve = new THREE.Mesh(curveGeo, curveMat2)
+  curve.scale.set(2, 84, 84)
+  curve.rotation.z = Math.PI/2
+  curve.updateMatrixWorld()
+  app.add(curve)
+}
+//////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // creating audio with space bar click
   const audioTrackInformation = {
@@ -481,6 +854,35 @@ export default (e) => {
     const threshold = getThreshold()
     updateMoodArray()
     logMood()
+
+    //faeries
+    faerieMasterpiece.material.uniforms.uTime.value = elapsedTime
+    room.material.uniforms.uTime.value = elapsedTime * 10
+    sphere.material.uniforms.uTime.value = elapsedTime * 10
+    curveMat.uniforms.uTime.value = elapsedTime
+    curveMat1.uniforms.uTime.value = elapsedTime
+    curveMat2.uniforms.uTime.value = elapsedTime
+
+    wireframe.material.uniforms.uTime.value = elapsedTime
+    if (pulseAnimation) {
+      if (pulseNumber >= 2) {
+        pulseNumber = 1
+        pulseNumber2 = 1
+        pulseAnimation = false
+      } else {
+        pulseNumber += beatFactor3 / 100
+        pulseNumber2 += beatFactor3 / 100
+        room.material.uniforms.uPulse.value = pulseNumber
+        room.material.uniforms.uPulse2.value = pulseNumber2
+      }
+    }
+//////
+
+
+
+
+
+
     
     if (neonClub) {
       neonParticles.material.uniforms.uTime.value = elapsedTime
@@ -512,6 +914,15 @@ export default (e) => {
         neonClubEmissiveMaterial.uniforms.uBeat.value = beatFactor1
         neonClubCyberLinesMaterial.uniforms.uBeat1.value = beatFactor1
         neonClubCyberLinesMaterial.uniforms.uBeat2.value = beatFactor3
+
+
+        ///faeries
+        room.material.uniforms.uBeat.value = beatFactor1
+        sphere.material.uniforms.uBeat.value = beatFactor1
+        faerieMasterpiece.material.uniforms.uBeat.value = beatFactor1
+        curveMat.uniforms.uBeat.value += beatFactor1
+
+        faerieMasterpiece.updateMatrixWorld()
       }
       if (beatFactor2) {
         cloudMaterial2.color = new THREE.Color(
@@ -519,6 +930,8 @@ export default (e) => {
           (moodChangerColor[0] + beatFactor2 / 30) / 5,
           (moodChangerColor[2] + beatFactor2 / 30) / 5
         )
+        //faeries 
+        curveMat2.uniforms.uBeat.value += beatFactor2
       }
       if (beatFactor3) {
         cloudMaterial3.color = new THREE.Color(
@@ -526,6 +939,11 @@ export default (e) => {
           (moodChangerColor[1] + beatFactor3 / 25) / 5,
           (moodChangerColor[2] + beatFactor3 / 30) / 5
         )
+        ///faeries
+        if (beatFactor3 >= 0.88) {
+          curveMat1.uniforms.uBeat.value += beatFactor3
+          pulseAnimation = true
+        }
       }
       if (beatFactor4) {
         cloudMaterial4.color = new THREE.Color(
