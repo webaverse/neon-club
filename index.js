@@ -178,6 +178,7 @@ export default (e) => {
               //works with hardcoded values
               gltf.scene.position.copy(params.speakerPos);
               gltf.scene.quaternion.copy(params.speakerQuat);
+              speaker1 = gltf.scene;
             }
           }
         })
@@ -576,7 +577,7 @@ export default (e) => {
     };
     //console.log(speaker.scene.isMesh());
     // if (speaker.scene){
-    speaker.scene.traverse(o => {
+    speaker1.scene.traverse(o => {
       if (o.isMesh) {
         o.morphTargetInfluences[0] = reactWoofer;
         o.morphTargetInfluences[1] = reactMid;
