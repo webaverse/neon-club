@@ -171,8 +171,8 @@ export default (e) => {
             if (child.name === 'Speaker_1'){
               console.log(child);
               gltf.scene.scale.set(4,4,4);
-              gltf.scene.position.set(params.position);
-              gltf.scene.quaternion.set(params.quaternion);
+              gltf.scene.position.set(params.speakerPos.value);
+              gltf.scene.quaternion.set(params.speakerQuat);
             }
           }
         })
@@ -200,8 +200,8 @@ export default (e) => {
   const speaker1Info = {
     fileName: 'react-Speaker.glb',
     filePath: baseUrl + 'models/',
-    position: new THREE.Vector3(45,5,43),
-    quaternion: new THREE.Vector4(0,1,0,0),
+    speakerPos: new THREE.Vector3(45,5,43),
+    speakerQuat: new THREE.Vector4(0,1,0,0),
   }
   const vizSpeaker1 = loadModel(speaker1Info);
 
