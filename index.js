@@ -128,6 +128,7 @@ export default (e) => {
       gltfLoader.load(params.filePath + params.fileName, (gltf) => {
         gltf.scene.traverse((child) => {
           if (child.isMesh) {
+            console.log(child);
             child.material.side = THREE.DoubleSide
             // checking if the child is a wall
             if (
@@ -187,6 +188,18 @@ export default (e) => {
 
   Promise.all([neonClub]).then((values) => {
     values.forEach((model) => {
+      app.add(model)
+    })
+  })
+  const speakerInfo = {
+    fileName: 'react-Speaker.glb',
+    filePath: baseUrl + 'models/',
+  }
+  const vizSpeaker = loadModel(speakerInfo);
+
+  Promise.all([vizSpeaker]).then((values) => {
+    values.forEach((model) => {
+      console.log("loaded speaker");
       app.add(model)
     })
   })
@@ -516,7 +529,7 @@ export default (e) => {
       updateClouds(cloudParticles2, 0.0004, beatFactor2)
       updateClouds(cloudParticles3, 0.00025, beatFactor3)
       updateClouds(cloudParticles4, -0.0003, beatFactor4)
-      console.log(beatFactor1);
+      // console.log(beatFactor1);
       // directionalLight.color = new THREE.Color(...moodChangerColor)
       // console.log(moodChanger)
     }
