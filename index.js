@@ -69,25 +69,13 @@ let reactMid
 export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
-  //let speaker = new THREE.Object3D();
-  let speaker2 = new THREE.Object3D();
   let speakers = [];
-  // let speake3 = new THREE.Object3D();
-  // let speaker3 = new THREE.Object3D();
-  // console.log(useInternals())
-
   // const rootScene = useInternals().rootScene
   // const camera = useInternals().camera
   // const composer = getComposer()
   const gl = useInternals().renderer
   const physics = usePhysics()
   gl.outputEncoding = THREE.sRGBEncoding
-  // const disposeMaterial = (obj) => {
-  //   if (obj.material) {
-  //     obj.material.dispose()
-  //   }
-  // }
-  // app.traverse(disposeMaterial)
   neonClubEmissiveMaterial = new THREE.ShaderMaterial({
     vertexShader: neonClubEmissiveVertexShader,
     fragmentShader: neonClubEmissiveFragmentShader,
@@ -172,8 +160,9 @@ export default (e) => {
               child.material = neonClubEmissiveMaterial
               // child.layers.toggle(BLOOM_SCENE)
             })
+
+            // methods for preparing speakers and their locations
             if (child.name === 'Speaker_1'){
-              console.log(child);
               let speaker1 = new THREE.Object3D();
               gltf.scene.scale.set(4,4,4);
               //works with hardcoded values
@@ -186,25 +175,24 @@ export default (e) => {
         })
         const physicsId = physics.addGeometry(gltf.scene)
         physicsIds.push(physicsId)
-        // gltf.scene.position.set(0, 0, 0)
-        // gltf.scene.rotation.set(Math.PI, 0, 0)
-        // gltf.scene.updateMatrixWorld()
         resolve(gltf.scene)
       })
     })
   }
   
+  // for loading club
   const neonClubInfo = {
     fileName: 'neonclub.glb',
     filePath: baseUrl + 'models/',
   }
   const neonClub = loadModel(neonClubInfo);
-
   Promise.all([neonClub]).then((values) => {
     values.forEach((model) => {
       app.add(model)
     })
   })
+
+  // for loadng speakers
   const speaker1Info = {
     fileName: 'react-Speaker.glb',
     filePath: baseUrl + 'models/',
@@ -212,7 +200,6 @@ export default (e) => {
     speakerQuat: new THREE.Vector4(0,1,0,0),
   }
   const vizSpeaker1 = loadModel(speaker1Info);
-
   Promise.all([vizSpeaker1]).then((values) => {
     values.forEach((model) => {
       console.log("loaded speaker");
@@ -227,13 +214,13 @@ export default (e) => {
     speakerQuat: new THREE.Vector4(0,1,0,0),
   }
   const vizSpeaker2 = loadModel(speakerInfo2);
-
   Promise.all([vizSpeaker2]).then((values) => {
     values.forEach((model) => {
       app.add(model)
-      console.log(model);
     })
   })
+
+  //^ Refactor
 
   const masterPiece = new THREE.Points(
     new THREE.PlaneBufferGeometry(5, 5, 60, 60),
@@ -293,8 +280,6 @@ export default (e) => {
   neonParticles.position.set(0, 140, 145)
 
   app.add(neonParticles)
-
-  // console.log();
 
   new THREE.TextureLoader().load(baseUrl + 'textures/smoke.png', (texture) => {
     cloudGeo = new THREE.PlaneBufferGeometry(100, 100)
@@ -462,12 +447,6 @@ export default (e) => {
 
 
 
-
-
-
-
-
-
   const updateClouds = (array, rotation, beatFactor) => {
     array.forEach((cloud) => {
       if (beatFactor) {
@@ -568,7 +547,7 @@ export default (e) => {
     // earthquakePass.factor = beatFactor1 / 4
 
 
-    // apply the factors to the morphs
+    // deforming speakers to the music
     if (beatSpeakerHi){
       reactMid = beatSpeakerHi;
       // console.log(reactWoofer);
@@ -584,7 +563,6 @@ export default (e) => {
           if (o.isMesh) {
             o.morphTargetInfluences[0] = reactWoofer;
             o.morphTargetInfluences[1] = reactMid;
-            //console.log(o.morphTargetInfluences[0], o.morphTargetInfluences[1], beatFactorSuperLow);
           }
         })
       });
