@@ -211,20 +211,20 @@ export default (e) => {
       app.add(model)
     })
   })
-  const speakerInfo2 = {
-    fileName: 'react-Speaker.glb',
-    filePath: baseUrl + 'models/',
-    position: new THREE.Vector3(83,5,43),
-    quaternion: new THREE.Vector4(0,1,0,0),
-  }
-  const vizSpeaker2 = loadModel(speakerInfo2);
+  // const speakerInfo2 = {
+  //   fileName: 'react-Speaker.glb',
+  //   filePath: baseUrl + 'models/',
+  //   position: new THREE.Vector3(83,5,43),
+  //   quaternion: new THREE.Vector4(0,1,0,0),
+  // }
+  // const vizSpeaker2 = loadModel(speakerInfo2);
 
-  Promise.all([vizSpeaker2]).then((values) => {
-    values.forEach((model) => {
-      console.log("loaded speaker");
-      app.add(model)
-    })
-  })
+  // Promise.all([vizSpeaker2]).then((values) => {
+  //   values.forEach((model) => {
+  //     console.log("loaded speaker");
+  //     app.add(model)
+  //   })
+  // })
 
   const masterPiece = new THREE.Points(
     new THREE.PlaneBufferGeometry(5, 5, 60, 60),
