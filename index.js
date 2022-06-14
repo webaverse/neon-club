@@ -178,7 +178,7 @@ export default (e) => {
               //works with hardcoded values
               gltf.scene.position.copy(params.speakerPos);
               gltf.scene.quaternion.copy(params.speakerQuat);
-              speaker1 = gltf.scene;
+              speaker1 = gltf;
             }
           }
         })
