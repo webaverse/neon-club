@@ -72,6 +72,7 @@ export default (e) => {
   //let speaker = new THREE.Object3D();
   let speaker1 = new THREE.Object3D();
   let speaker2 = new THREE.Object3D();
+  let speakers = [];
   // let speake3 = new THREE.Object3D();
   // let speaker3 = new THREE.Object3D();
   // console.log(useInternals())
@@ -179,6 +180,7 @@ export default (e) => {
               gltf.scene.position.copy(params.speakerPos);
               gltf.scene.quaternion.copy(params.speakerQuat);
               speaker1 = gltf;
+              speakers.push(speaker1);
             }
           }
         })
@@ -576,14 +578,18 @@ export default (e) => {
       // console.log(reactMid);
     };
     //console.log(speaker.scene.isMesh());
-    // if (speaker.scene){
-    speaker1.scene.traverse(o => {
-      if (o.isMesh) {
-        o.morphTargetInfluences[0] = reactWoofer;
-        o.morphTargetInfluences[1] = reactMid;
-        //console.log(o.morphTargetInfluences[0], o.morphTargetInfluences[1], beatFactorSuperLow);
-      }
-    })
+    if (speakers){
+      speakers.forEach(speaker => {
+        speaker.scene.traverse(o => {
+          if (o.isMesh) {
+            o.morphTargetInfluences[0] = reactWoofer;
+            o.morphTargetInfluences[1] = reactMid;
+            //console.log(o.morphTargetInfluences[0], o.morphTargetInfluences[1], beatFactorSuperLow);
+          }
+        })
+      });
+
+  }
 
 
 
