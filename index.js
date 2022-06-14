@@ -70,7 +70,6 @@ export default (e) => {
   const app = useApp()
   app.name = 'neon-club'
   //let speaker = new THREE.Object3D();
-  let speaker1 = new THREE.Object3D();
   let speaker2 = new THREE.Object3D();
   let speakers = [];
   // let speake3 = new THREE.Object3D();
@@ -175,6 +174,7 @@ export default (e) => {
             })
             if (child.name === 'Speaker_1'){
               console.log(child);
+              let speaker1 = new THREE.Object3D();
               gltf.scene.scale.set(4,4,4);
               //works with hardcoded values
               gltf.scene.position.copy(params.speakerPos);
@@ -220,20 +220,20 @@ export default (e) => {
       console.log(model);
     })
   })
-  // const speakerInfo2 = {
-  //   fileName: 'react-Speaker.glb',
-  //   filePath: baseUrl + 'models/',
-  //   position: new THREE.Vector3(83,5,43),
-  //   quaternion: new THREE.Vector4(0,1,0,0),
-  // }
-  // const vizSpeaker2 = loadModel(speakerInfo2);
+  const speakerInfo2 = {
+    fileName: 'react-Speaker.glb',
+    filePath: baseUrl + 'models/',
+    position: new THREE.Vector3(83,5,43),
+    quaternion: new THREE.Vector4(0,1,0,0),
+  }
+  const vizSpeaker2 = loadModel(speakerInfo2);
 
-  // Promise.all([vizSpeaker2]).then((values) => {
-  //   values.forEach((model) => {
-  //     app.add(model)
-  //     console.log(model);
-  //   })
-  // })
+  Promise.all([vizSpeaker2]).then((values) => {
+    values.forEach((model) => {
+      app.add(model)
+      console.log(model);
+    })
+  })
 
   const masterPiece = new THREE.Points(
     new THREE.PlaneBufferGeometry(5, 5, 60, 60),
