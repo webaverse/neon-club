@@ -223,8 +223,8 @@ export default (e) => {
   const speakerInfo2 = {
     fileName: 'react-Speaker.glb',
     filePath: baseUrl + 'models/',
-    position: new THREE.Vector3(83,5,43),
-    quaternion: new THREE.Vector4(0,1,0,0),
+    speakerPos: new THREE.Vector3(83,5,43),
+    speakerQuat: new THREE.Vector4(0,1,0,0),
   }
   const vizSpeaker2 = loadModel(speakerInfo2);
 
