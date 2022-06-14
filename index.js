@@ -126,9 +126,9 @@ export default (e) => {
       gltfLoader.setDRACOLoader(dracoLoader).setCrossOrigin('anonymous')
 
       gltfLoader.load(params.filePath + params.fileName, (gltf) => {
+        console.log(gltf);
         gltf.scene.traverse((child) => {
           if (child.isMesh) {
-            console.log(child);
             child.material.side = THREE.DoubleSide
             // checking if the child is a wall
             if (
