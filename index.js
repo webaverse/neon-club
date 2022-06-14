@@ -568,11 +568,11 @@ export default (e) => {
 
     // apply the factors to the morphs
     if (beatSpeakerHi){
-      reactWoofer = beatSpeakerHi;
+      reactMid = beatSpeakerHi;
       // console.log(reactWoofer);
     };
     if (beatSpeakerBass){
-      reactMid = beatSpeakerBass;
+      reactWoofer = beatSpeakerBass;
       // console.log(reactMid);
     };
     //console.log(speaker.scene.isMesh());
