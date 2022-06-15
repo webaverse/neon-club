@@ -48,10 +48,15 @@ let beatFactor2;
 let beatFactor3;
 let beatFactor4;
 let elapsedTime;
+let beatSpeakerHi
+let beatSpeakerBass
+let reactWoofer
+let reactMid
 
 export default (e) => {
   const app = useApp();
   app.name = 'neon-club';
+  let speakers = [];
   // console.log(useInternals())
 
   // const rootScene = useInternals().rootScene
@@ -145,6 +150,16 @@ export default (e) => {
             if (child.material.name === 'emasive') {
               child.material = neonClubEmissiveMaterial;
             }
+            // methods for preparing speakers and their locations 
+            if (child.name === 'Speaker_1'){
+              let speaker1 = new THREE.Object3D();
+              gltf.scene.scale.set(4,4,4);
+              //works with hardcoded values
+              gltf.scene.position.copy(params.speakerPos);
+              gltf.scene.quaternion.copy(params.speakerQuat);
+              speaker1 = gltf;
+              speakers.push(speaker1);
+            }
           }
         });
         const physicsId = physics.addGeometry(gltf.scene);
@@ -157,6 +172,8 @@ export default (e) => {
     });
   };
 
+
+  //loading external assets
   const neonClubInfo = {
     fileName: 'neonclub_interior_V2_guilty.glb',
     filePath: baseUrl + 'models/',
@@ -168,7 +185,34 @@ export default (e) => {
       app.add(model);
     });
   });
+  const speaker1Info = {
+    fileName: 'react-Speaker.glb',
+    filePath: baseUrl + 'models/',
+    speakerPos: new THREE.Vector3(45,5,43),
+    speakerQuat: new THREE.Vector4(0,1,0,0),
+  }
+  const vizSpeaker1 = loadModel(speaker1Info);
+  Promise.all([vizSpeaker1]).then((values) => {
+    values.forEach((model) => {
+      console.log("loaded speaker");
+      app.add(model)
+      console.log(model);
+    })
+  })
+  const speakerInfo2 = {
+    fileName: 'react-Speaker.glb',
+    filePath: baseUrl + 'models/',
+    speakerPos: new THREE.Vector3(83,5,43),
+    speakerQuat: new THREE.Vector4(0,1,0,0),
+  }
+  const vizSpeaker2 = loadModel(speakerInfo2);
+  Promise.all([vizSpeaker2]).then((values) => {
+    values.forEach((model) => {
+      app.add(model)
+    })
+  })
 
+  //creating audio-react sphere
   const sphere = new THREE.Mesh(
     new THREE.SphereBufferGeometry(2.5, 1000, 1000),
     new THREE.ShaderMaterial({
@@ -194,7 +238,7 @@ export default (e) => {
       },
     })
   );
-  sphere.position.set(-90, 12, 0);
+  sphere.position.set(-94, 14, 1);
   sphere.rotation.y = Math.PI;
   sphere.updateMatrixWorld();
 
@@ -291,6 +335,7 @@ export default (e) => {
   document.body.onkeyup = (e) => {
     if (e.code === 'Space') {
       const audio = getAudio({ createOnCall: false });
+      console.log("space pressed");
       if (audio.paused !== undefined) {
         if (audio.paused) {
           audio.play();
@@ -335,42 +380,91 @@ export default (e) => {
       neonClubEmissiveMaterial.uniforms.uMood.value = new THREE.Vector3(
         ...moodChangerColor
       );
+      sphere.material.uniforms.uMood.value = new THREE.Vector3(
+        moodChangerColor[0],moodChangerColor[1], moodChangerColor[2]
+      );
       if (beatFactor1) {
-        cloudMaterial1.color = new THREE.Color(
-          (moodChangerColor[0] + beatFactor1 / 30) / 5,
-          (moodChangerColor[1] + beatFactor1 / 22) / 5,
-          (moodChangerColor[2] + beatFactor1 / 30) / 5
-        );
+        // cloudMaterial1.color = new THREE.Color(
+        //   (moodChangerColor[0] + beatFactor1 / 30) / 5,
+        //   (moodChangerColor[1] + beatFactor1 / 22) / 5,
+        //   (moodChangerColor[2] + beatFactor1 / 30) / 5
+        // );
         neonClubEmissiveMaterial.uniforms.uBeat.value = beatFactor1;
         neonClubCyberLinesMaterial.uniforms.uBeat1.value = beatFactor1;
         neonClubCyberLinesMaterial.uniforms.uBeat2.value = beatFactor3;
-        sphere.material.uniforms.uBeat.value = beatFactor3;
+        // sphere.material.uniforms.uBeat.value = beatFactor3;
       }
       if (beatFactor2) {
-        cloudMaterial2.color = new THREE.Color(
-          (moodChangerColor[1] + beatFactor2 / 22) / 5,
-          (moodChangerColor[0] + beatFactor2 / 30) / 5,
-          (moodChangerColor[2] + beatFactor2 / 30) / 5
-        );
+        // cloudMaterial2.color = new THREE.Color(
+        //   (moodChangerColor[1] + beatFactor2 / 22) / 5,
+        //   (moodChangerColor[0] + beatFactor2 / 30) / 5,
+        //   (moodChangerColor[2] + beatFactor2 / 30) / 5
+        // );
       }
       if (beatFactor3) {
-        cloudMaterial3.color = new THREE.Color(
-          (moodChangerColor[0] - beatFactor3 / 30) / 5,
-          (moodChangerColor[1] + beatFactor3 / 25) / 5,
-          (moodChangerColor[2] + beatFactor3 / 30) / 5
-        );
+        // cloudMaterial3.color = new THREE.Color(
+        //   (moodChangerColor[0] - beatFactor3 / 30) / 5,
+        //   (moodChangerColor[1] + beatFactor3 / 25) / 5,
+        //   (moodChangerColor[2] + beatFactor3 / 30) / 5
+        // );
       }
       if (beatFactor4) {
-        cloudMaterial4.color = new THREE.Color(
-          (moodChangerColor[0] - beatFactor4 / 30) / 5,
-          (moodChangerColor[1] + beatFactor4 / 24) / 5,
-          (moodChangerColor[2] + beatFactor4 / 32) / 5
-        );
+        // cloudMaterial4.color = new THREE.Color(
+        //   (moodChangerColor[0] - beatFactor4 / 30) / 5,
+        //   (moodChangerColor[1] + beatFactor4 / 24) / 5,
+        //   (moodChangerColor[2] + beatFactor4 / 32) / 5
+        // );
       }
     }
     // shaking the scene with beat
     // earthquakePass.factor = beatFactor1 / 4
 
+    // deforming speakers to the music
+    if (beatSpeakerHi){
+      reactMid = beatSpeakerHi;
+      // console.log(reactWoofer);
+    };
+    if (beatSpeakerBass){
+      reactWoofer = beatSpeakerBass;
+      // console.log(reactMid);
+    };
+    //console.log(speaker.scene.isMesh());
+    if (speakers){
+      speakers.forEach(speaker => {
+        speaker.scene.traverse(o => {
+          if (o.isMesh) {
+            o.morphTargetInfluences[0] = reactWoofer;
+            o.morphTargetInfluences[1] = reactMid;
+            // sphere.material.uniforms.uPulse2.value = reactMid;
+          }
+        })
+      });
+    }
+    if (reactWoofer){
+      // if (reactWoofer === 1){
+      //   sphere.material.uniforms.uBeat.value = 3;
+      // }else{
+      sphere.material.uniforms.uBeat.value = reactWoofer;
+      console.log(reactWoofer, sphere.material.uniforms.uPulse2.value);
+      
+    }
+
+
+
+    // SpeakerFactors
+    beatSpeakerHi = getFrequenciesByRange({
+      horizontalRangeStart: 80,
+      horizontalRangeEnd: 108,
+      verticalRangeStart: 140,
+      verticalRangeEnd: 170,
+    });
+    beatSpeakerBass = getFrequenciesByRange({
+      horizontalRangeStart: 0,
+      horizontalRangeEnd: 35,
+      verticalRangeStart: 120,
+      verticalRangeEnd: 200,
+    });
+    // various other beat factor ranges
     beatFactor1 = getFrequenciesByRange({
       horizontalRangeStart: 208,
       horizontalRangeEnd: 216,
@@ -399,6 +493,9 @@ export default (e) => {
     // console.log(beatFactor3)
     // renderBloom(true)
   });
+
+
+
   useCleanup(() => {
     // composer.removePass(finalPass)
     // composer.removePass(earthquakePass)
