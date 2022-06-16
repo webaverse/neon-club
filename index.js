@@ -56,12 +56,11 @@ let beatSpeakerBass
 let reactWoofer
 let reactMid
 
-// Egirl asset
-
 export default (e) => {
   const app = useApp();
   app.name = 'neon-club';
   let speakers = [];
+
   // console.log(useInternals())
   let capitalText;
   let eGirlText;
@@ -192,6 +191,7 @@ export default (e) => {
             //   speaker1 = gltf;
             //   speakers.push(speaker1);
             // }
+
           }
         });
         const physicsId = physics.addGeometry(gltf.scene);
@@ -278,9 +278,6 @@ export default (e) => {
   // clouds.updateMatrixWorld();
 
   // app.add(clouds);
-  
-
-
   //creating audio-react sphere
   const sphere = new THREE.Mesh(
     new THREE.SphereBufferGeometry(2.5, 1000, 1000),
@@ -308,6 +305,7 @@ export default (e) => {
     })
   );
   sphere.position.set(-94, 14, 1);
+
   sphere.rotation.y = Math.PI;
   sphere.updateMatrixWorld();
 
@@ -404,7 +402,6 @@ export default (e) => {
   document.body.onkeyup = (e) => {
     if (e.code === 'Space') {
       const audio = getAudio({ createOnCall: false });
-      console.log("space pressed");
       if (audio.paused !== undefined) {
         if (audio.paused) {
           audio.play();
@@ -449,6 +446,7 @@ export default (e) => {
       neonClubEmissiveMaterial.uniforms.uMood.value = new THREE.Vector3(
         ...moodChangerColor
       );
+      
       sphere.material.uniforms.uMood.value = new THREE.Vector3(
         moodChangerColor[0],moodChangerColor[1], moodChangerColor[2]
       );
@@ -583,8 +581,6 @@ export default (e) => {
     // console.log(beatFactor3)
     // renderBloom(true)
   });
-
-
 
   useCleanup(() => {
     // composer.removePass(finalPass)
