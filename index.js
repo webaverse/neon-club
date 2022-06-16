@@ -49,10 +49,18 @@ let beatFactor2;
 let beatFactor3;
 let beatFactor4;
 let elapsedTime;
+
+//speaker asset
 let beatSpeakerHi
 let beatSpeakerBass
 let reactWoofer
 let reactMid
+
+// Egirl asset
+let eGirlText;
+let capitalText;
+let backPlate;
+let eGirlFrame;
 
 export default (e) => {
   const app = useApp();
@@ -151,6 +159,11 @@ export default (e) => {
             if (child.material.name === 'emasive') {
               child.material = neonClubEmissiveMaterial;
             }
+            if (child.name === 'Backplate') {
+              console.log("test");
+              gltf.scene.position.copy(params.logoPos);
+              // gltf.scene.quaternion.copy(params.logoQuat);
+            }
             // // methods for preparing speakers and their locations 
             // if (child.name === 'Speaker_1'){
             //   let speaker1 = new THREE.Object3D();
@@ -187,7 +200,19 @@ export default (e) => {
     });
   });
 
+  const eGirlLogoInfo = {
+    fileName: 'egirl_logo.glb',
+    filePath: baseUrl + 'models/',
+    logoPos: new THREE.Vector3(83,5,43),
+    logoQuat: new THREE.Vector4(0,1,0,0),
+  };
+  const eGirlLogo = loadModel(eGirlLogoInfo);
 
+  Promise.all([neonClub]).then((values) => {
+    values.forEach((model) => {
+      app.add(model);
+    });
+  });
 
 
 
@@ -469,7 +494,7 @@ export default (e) => {
       //   sphere.material.uniforms.uBeat.value = 3;
       // }else{
       sphere.material.uniforms.uBeat.value = reactWoofer;
-      console.log(reactWoofer, sphere.material.uniforms.uPulse2.value);
+      // console.log(reactWoofer, sphere.material.uniforms.uPulse2.value);
       
     }
 
