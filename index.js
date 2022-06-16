@@ -65,6 +65,7 @@ export default (e) => {
   // console.log(useInternals())
   let capitalText;
   let eGirlText;
+  let egirlSign;
   let backPlate;
   let eGirlFrame;
 
@@ -129,8 +130,9 @@ export default (e) => {
             if (
               child.material.name === 'Wall' ||
               child.material.name === 'Wall.001' ||
-              child.material.name === 'Wall2' ||
-              child.material.name === "Material.012"
+              child.material.name === 'Wall2' 
+              // ||
+              // child.material.name === "Material.012"
             ) {
               const emissiveMap = new THREE.TextureLoader().load(
                 baseUrl + 'textures/wall_Emissive.png'
@@ -163,10 +165,16 @@ export default (e) => {
             }
             if (child.name === 'EGirl') {
               gltf.scene.scale.set(13.5,13.5,13.5);
+              egirlSign = gltf.scene;
               gltf.scene.position.copy(params.logoPos);
               gltf.scene.rotation.set(0, 1.57,0);
+              eGirlText = child;
+              console.log(eGirlText);
               // gltf.scene.quaternion.copy(params.logoQuat);
-            }           
+            }
+            if (child.name === 'Capital') {
+              capitalText = child;
+            }      
              if (child.name === 'Frame') {
               eGirlFrame = child;
               // let red = new THREE.Color(1,0,0);
@@ -211,7 +219,7 @@ export default (e) => {
   });
 
   const eGirlLogoInfo = {
-    fileName: 'egirl_logo.glb',
+    fileName: 'egirl_logo_SK.glb',
     filePath: baseUrl + 'models/',
     logoPos: new THREE.Vector3(-120.3, 45, -2.5),
     // logoQuat: new THREE.Vector4(0,1,0,0.4),
@@ -444,10 +452,19 @@ export default (e) => {
       sphere.material.uniforms.uMood.value = new THREE.Vector3(
         moodChangerColor[0],moodChangerColor[1], moodChangerColor[2]
       );
-      if(eGirlFrame){
+      if(egirlSign){
+      egirlSign.traverse(o =>{
+        if (o.isMesh){
+          if (o.morphTargetInfluences){
+            o.morphTargetInfluences[0] = reactWoofer;
+          }
+        }
+      })
       // if(moodChangerColor[0] > 0.6 && moodChangerColor[0]> 0.6){
       const moodColor = new THREE.Color(...moodChangerColor)
       eGirlFrame.material.emissive.set(moodColor);
+      capitalText.material.emissive.set(moodColor);
+      //eGirlText.material.emissive.set(moodColor);
       // }
       }
       if (beatFactor1) {
@@ -507,9 +524,16 @@ export default (e) => {
     //   });
     // }
     if (reactWoofer){
-      // if (reactWoofer === 1){
-      //   sphere.material.uniforms.uBeat.value = 3;
-      // }else{
+
+      const white = new THREE.Color(1,1,1);
+      const pink = new THREE.Color(1,0,1);
+      if (reactWoofer >= 0.95){
+        eGirlText.material.emissive.set(white);
+      }else{
+        eGirlText.material.emissive.set(pink);
+      }
+      console.log(beatFactor1, beatFactor2, beatFactor3, beatFactor4);
+      // console.log(egirlSign.scale);
       sphere.material.uniforms.uBeat.value = reactWoofer;
       // console.log(reactWoofer, sphere.material.uniforms.uPulse2.value);
       
