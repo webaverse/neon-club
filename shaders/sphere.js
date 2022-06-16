@@ -112,37 +112,12 @@ const sphereFragment = `
   
 
   void main() {
-    // vec3 t = vec3(0.1 , 0.2 , 0.8);
-    // vec3 t = vec3(vUv.x)/1.2;
-    // t += vUv.y;
-    // t*=rz;
-    // t/=2.;
-    // t.r += uBeat/3.;
-    // t.g += uBeat/4.;
-    // t.b += uBeat/2.;
-    // float strength = 1. - step(0.5 , distance(gl_PointCoord, vec2(.5)));
-
 
     vec3 col =  vPattern * uMood;
-    // col += fbm(vUv * sin(uTime/10000.) * 10.)/100.;
-    // for (float i = 1.; i < 10.; i++) {
-      // vec2 c1 = vUv;
-      // c1.y += uPulse;
-      // vec2 lightUv1 = vec2(c1.y * 0.5 + 0.25 , 0.5);
-      // float strength1 = 0.01/distance(lightUv1,vec2(0.5));
-      // col *= strength1;
-      // col*=2.;
-    // }
-    
-    // vec2 c2 = vUv;
-    // c2.y += uPulse2;
-    // vec2 lightUv2 = vec2(c2.y * 0.5 + 0.25 , 0.5);
-    // float strength2 = 0.015/distance(lightUv2,vec2(0.5));
-    // vec3 col = vec3(mix(strength1 , strength2 , 0.5)) * marble;
-    
-    
 
+    
     gl_FragColor = vec4(col, 1.);
+    
   // gl_FragColor = vec4(vec3(pow(1. - distance(gl_PointCoord, vec2(.5)) , 10.))  * vec3(0.2784, 0.5529, 0.9137) / vec3(0.3765, 0.6118, 0.4863)/5. * vec3(texture2D(uTexture , vUv)) ,1.);
   ${THREE.ShaderChunk.logdepthbuf_fragment}
   }
