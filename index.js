@@ -208,6 +208,7 @@ export default (e) => {
     fileName: 'egirl_logo.glb',
     filePath: baseUrl + 'models/',
     logoPos: new THREE.Vector3(-119, 45, -2),
+    // logoQuat: new THREE.Vector4(0,1,0,0.4),
   };
   const eGirlLogo = loadModel(eGirlLogoInfo);
 
