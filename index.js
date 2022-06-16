@@ -57,16 +57,16 @@ let reactWoofer
 let reactMid
 
 // Egirl asset
-let eGirlText;
-let capitalText;
-let backPlate;
-let eGirlFrame;
 
 export default (e) => {
   const app = useApp();
   app.name = 'neon-club';
   let speakers = [];
   // console.log(useInternals())
+  let capitalText;
+  let eGirlText;
+  let backPlate;
+  let eGirlFrame;
 
   // const rootScene = useInternals().rootScene
   // const camera = useInternals().camera
@@ -159,21 +159,25 @@ export default (e) => {
             if (child.material.name === 'emasive') {
               child.material = neonClubEmissiveMaterial;
             }
-            if (child.name === 'Backplate') {
-              console.log("test");
+            if (child.name === 'EGirl') {
+              gltf.scene.scale.set(16,16,16);
               gltf.scene.position.copy(params.logoPos);
+              gltf.scene.rotation.set(0, 1.5,0);
               // gltf.scene.quaternion.copy(params.logoQuat);
+            }           
+             if (child.name === 'Frame') {
+              eGirlFrame = child;
             }
-            // // methods for preparing speakers and their locations 
-            // if (child.name === 'Speaker_1'){
-            //   let speaker1 = new THREE.Object3D();
-            //   gltf.scene.scale.set(4,4,4);
-            //   //works with hardcoded values
-            //   gltf.scene.position.copy(params.speakerPos);
-            //   gltf.scene.quaternion.copy(params.speakerQuat);
-            //   speaker1 = gltf;
-            //   speakers.push(speaker1);
-            // }
+            // methods for preparing speakers and their locations 
+            if (child.name === 'Speaker_1'){
+              let speaker1 = new THREE.Object3D();
+              gltf.scene.scale.set(4,4,4);
+              //works with hardcoded values
+              gltf.scene.position.copy(params.speakerPos);
+              gltf.scene.quaternion.copy(params.speakerQuat);
+              speaker1 = gltf;
+              speakers.push(speaker1);
+            }
           }
         });
         const physicsId = physics.addGeometry(gltf.scene);
@@ -203,33 +207,33 @@ export default (e) => {
   const eGirlLogoInfo = {
     fileName: 'egirl_logo.glb',
     filePath: baseUrl + 'models/',
-    logoPos: new THREE.Vector3(83,5,43),
-    logoQuat: new THREE.Vector4(0,1,0,0),
+    logoPos: new THREE.Vector3(-119, 45, -2),
   };
   const eGirlLogo = loadModel(eGirlLogoInfo);
 
-  Promise.all([neonClub]).then((values) => {
+  Promise.all([eGirlLogo]).then((values) => {
     values.forEach((model) => {
+      console.log("loaded egirl", eGirlFrame);
       app.add(model);
     });
   });
+  // eGirlLogo.position.set(83,5,43);
 
 
 
-  // const speaker1Info = {
-  //   fileName: 'react-Speaker.glb',
-  //   filePath: baseUrl + 'models/',
-  //   speakerPos: new THREE.Vector3(45,5,43),
-  //   speakerQuat: new THREE.Vector4(0,1,0,0),
-  // }
-  // const vizSpeaker1 = loadModel(speaker1Info);
-  // Promise.all([vizSpeaker1]).then((values) => {
-  //   values.forEach((model) => {
-  //     console.log("loaded speaker");
-  //     app.add(model)
-  //     console.log(model);
-  //   })
-  // })
+  const speaker1Info = {
+    fileName: 'react-Speaker.glb',
+    filePath: baseUrl + 'models/',
+    speakerPos: new THREE.Vector3(45,5,43),
+    speakerQuat: new THREE.Vector4(0,1,0,0),
+  }
+  const vizSpeaker1 = loadModel(speaker1Info);
+  Promise.all([vizSpeaker1]).then((values) => {
+    values.forEach((model) => {
+      // console.log("loaded speaker", model);
+      app.add(model)
+    })
+  })
   // const speakerInfo2 = {
   //   fileName: 'react-Speaker.glb',
   //   filePath: baseUrl + 'models/',
@@ -433,6 +437,10 @@ export default (e) => {
       sphere.material.uniforms.uMood.value = new THREE.Vector3(
         moodChangerColor[0],moodChangerColor[1], moodChangerColor[2]
       );
+      // if(moodChangerColor[0] > 0.6 && moodChangerColor[0]> 0.6){
+      const moodColor = new THREE.Color(...moodChangerColor)
+      eGirlFrame.material.emissive.set(moodColor);
+      // }
       if (beatFactor1) {
         // cloudMaterial1.color = new THREE.Color(
         //   (moodChangerColor[0] + beatFactor1 / 30) / 5,
