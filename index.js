@@ -153,6 +153,7 @@ export default (e) => {
               child.material = neonClubCyberLinesMaterial;
               // child.layers.toggle(BLOOM_SCENE)
             }
+          
             if (child.name === 'Cube133_2') {
               child.material = neonClubEmissiveMaterial;
               // child.layers.toggle(BLOOM_SCENE)
@@ -161,9 +162,9 @@ export default (e) => {
               child.material = neonClubEmissiveMaterial;
             }
             if (child.name === 'EGirl') {
-              gltf.scene.scale.set(16,16,16);
+              gltf.scene.scale.set(13.5,13.5,13.5);
               gltf.scene.position.copy(params.logoPos);
-              gltf.scene.rotation.set(0, 1.5,0);
+              gltf.scene.rotation.set(0, 1.57,0);
               // gltf.scene.quaternion.copy(params.logoQuat);
             }           
              if (child.name === 'Frame') {
@@ -212,7 +213,7 @@ export default (e) => {
   const eGirlLogoInfo = {
     fileName: 'egirl_logo.glb',
     filePath: baseUrl + 'models/',
-    logoPos: new THREE.Vector3(-119, 45, -2),
+    logoPos: new THREE.Vector3(-120.3, 45, -2.5),
     // logoQuat: new THREE.Vector4(0,1,0,0.4),
   };
   const eGirlLogo = loadModel(eGirlLogoInfo);
