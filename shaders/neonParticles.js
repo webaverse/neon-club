@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 const neonParticlesVertexShader = `
-      ${THREE.ShaderChunk.common}
+      ${THREE.ShaderChunk.  }
       varying vec2 vUv;
       varying vec3 vPattern;
       uniform vec2 uResolution;
