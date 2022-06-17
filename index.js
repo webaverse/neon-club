@@ -67,6 +67,7 @@ export default (e) => {
   let eGirlText;
   let egirlSign;
   let backPlate;
+  let zeroAbleTime = 0;
   let eGirlFrame;
 
   // const rootScene = useInternals().rootScene
@@ -435,12 +436,14 @@ export default (e) => {
 
   useFrame(({ timestamp }) => {
     elapsedTime = timestamp;
+    zeroAbleTime++;
     const threshold = getThreshold();
     updateMoodArray();
     logMood();
     if (neonClub) {
       neonClubEmissiveMaterial.uniforms.uTime.value = elapsedTime;
-      neonClubCyberLinesMaterial.uniforms.uTime.value = elapsedTime;
+      neonClubCyberLinesMaterial.uniforms.uTime.value = zeroAbleTime;
+      console.log(neonClubCyberLinesMaterial.uniforms.uTime.value);
       sphere.material.uniforms.uTime.value = elapsedTime * 10.0;
 
       const moodChanger = (threshold + 1) / 256;
@@ -535,7 +538,7 @@ export default (e) => {
       const pink = new THREE.Color(1,0,1);
       if (reactWoofer >= 0.95){
         eGirlText.material.emissive.set(white);
-        neonClubCyberLinesMaterial.uniforms.uTime.value = 450;
+        zeroAbleTime = 1500;
       }else{
         eGirlText.material.emissive.set(pink);
       }
