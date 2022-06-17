@@ -29,7 +29,7 @@ import {
   neonClubEmissiveVertexShader,
 } from './shaders/neonEmissive.js';
 import { sphereFragment, sphereVertex } from './shaders/sphere.js';
-// import { cloudFragment, cloudVertex } from './shaders/clouds.js';
+import { cloudFragment, cloudVertex } from './shaders/clouds.js';
 
 const { useApp, useLoaders, useFrame, useCleanup, usePhysics, useInternals } =
   metaversefile;
@@ -56,11 +56,12 @@ let beatSpeakerBass
 let reactWoofer
 let reactMid
 
+// Egirl asset
+
 export default (e) => {
   const app = useApp();
   app.name = 'neon-club';
   let speakers = [];
-
   // console.log(useInternals())
   let capitalText;
   let eGirlText;
@@ -191,7 +192,6 @@ export default (e) => {
             //   speaker1 = gltf;
             //   speakers.push(speaker1);
             // }
-
           }
         });
         const physicsId = physics.addGeometry(gltf.scene);
@@ -270,14 +270,23 @@ export default (e) => {
   //     vertexColors: true,
   //     uniforms: {
   //       uTime:{value:0},
+  //       uBeat: { value: 0.5 },
+  //       uMood: { value: new THREE.Vector3(0.1, 0.2, 0.6) },
+  //       uResolution: {
+  //          value: new THREE.Vector2(window.innerWidth, window.innerHeight),
+  //       },
+  //       uTexture: { value: null },
   //     }
   //   })
   // )
-  // clouds.position.set(0, 0, 0);
+  // clouds.position.set(83,5,43);
   // clouds.rotation.set(0, 0, 0);
   // clouds.updateMatrixWorld();
 
   // app.add(clouds);
+  
+
+
   //creating audio-react sphere
   const sphere = new THREE.Mesh(
     new THREE.SphereBufferGeometry(2.5, 1000, 1000),
@@ -305,7 +314,6 @@ export default (e) => {
     })
   );
   sphere.position.set(-94, 14, 1);
-
   sphere.rotation.y = Math.PI;
   sphere.updateMatrixWorld();
 
@@ -400,8 +408,9 @@ export default (e) => {
     // currentTime: 100.2,
   };
   document.body.onkeyup = (e) => {
-    if (e.code === 'Space') {
+    if (e.code === 'Digit1') {
       const audio = getAudio({ createOnCall: false });
+      console.log("1 pressed");
       if (audio.paused !== undefined) {
         if (audio.paused) {
           audio.play();
@@ -446,7 +455,6 @@ export default (e) => {
       neonClubEmissiveMaterial.uniforms.uMood.value = new THREE.Vector3(
         ...moodChangerColor
       );
-      
       sphere.material.uniforms.uMood.value = new THREE.Vector3(
         moodChangerColor[0],moodChangerColor[1], moodChangerColor[2]
       );
@@ -471,7 +479,7 @@ export default (e) => {
         //   (moodChangerColor[1] + beatFactor1 / 22) / 5,
         //   (moodChangerColor[2] + beatFactor1 / 30) / 5
         // );
-        neonClubEmissiveMaterial.uniforms.uBeat.value = beatFactor1;
+      neonClubEmissiveMaterial.uniforms.uBeat.value = beatFactor1;
         neonClubCyberLinesMaterial.uniforms.uBeat1.value = beatFactor1;
         neonClubCyberLinesMaterial.uniforms.uBeat2.value = beatFactor3;
         // sphere.material.uniforms.uBeat.value = beatFactor3;
@@ -527,6 +535,7 @@ export default (e) => {
       const pink = new THREE.Color(1,0,1);
       if (reactWoofer >= 0.95){
         eGirlText.material.emissive.set(white);
+        neonClubCyberLinesMaterial.uniforms.uTime.value = 450;
       }else{
         eGirlText.material.emissive.set(pink);
       }
@@ -581,6 +590,8 @@ export default (e) => {
     // console.log(beatFactor3)
     // renderBloom(true)
   });
+
+
 
   useCleanup(() => {
     // composer.removePass(finalPass)
