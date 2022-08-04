@@ -336,31 +336,33 @@ export default (e) => {
         ...moodChangerColor
       );
       if (beatFactor1) {
-        cloudMaterial1.color = new THREE.Color(
-          (moodChangerColor[0] + beatFactor1 / 30) / 5,
-          (moodChangerColor[1] + beatFactor1 / 22) / 5,
-          (moodChangerColor[2] + beatFactor1 / 30) / 5
-        );
+        if (cloudMaterial1){
+          cloudMaterial1.color = new THREE.Color(
+            (moodChangerColor[0] + beatFactor1 / 30) / 5,
+            (moodChangerColor[1] + beatFactor1 / 22) / 5,
+            (moodChangerColor[2] + beatFactor1 / 30) / 5
+          );
+        }
         neonClubEmissiveMaterial.uniforms.uBeat.value = beatFactor1;
         neonClubCyberLinesMaterial.uniforms.uBeat1.value = beatFactor1;
         neonClubCyberLinesMaterial.uniforms.uBeat2.value = beatFactor3;
         sphere.material.uniforms.uBeat.value = beatFactor3;
       }
-      if (beatFactor2) {
+      if (beatFactor2 && cloudMaterial2) {
         cloudMaterial2.color = new THREE.Color(
           (moodChangerColor[1] + beatFactor2 / 22) / 5,
           (moodChangerColor[0] + beatFactor2 / 30) / 5,
           (moodChangerColor[2] + beatFactor2 / 30) / 5
         );
       }
-      if (beatFactor3) {
+      if (beatFactor3 && cloudMaterial3) {
         cloudMaterial3.color = new THREE.Color(
           (moodChangerColor[0] - beatFactor3 / 30) / 5,
           (moodChangerColor[1] + beatFactor3 / 25) / 5,
           (moodChangerColor[2] + beatFactor3 / 30) / 5
         );
       }
-      if (beatFactor4) {
+      if (beatFactor4 && cloudMaterial4) {
         cloudMaterial4.color = new THREE.Color(
           (moodChangerColor[0] - beatFactor4 / 30) / 5,
           (moodChangerColor[1] + beatFactor4 / 24) / 5,
