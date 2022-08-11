@@ -44,6 +44,12 @@ let cloudMaterial1;
 let cloudMaterial2;
 let cloudMaterial3;
 let cloudMaterial4;
+const localVector3 = new THREE.Vector3();
+const localVector31 = new THREE.Vector3();
+const localColor = new THREE.Color();
+const localColor1 = new THREE.Color();
+const localColor2 = new THREE.Color();
+const localColor3 = new THREE.Color();
 let beatFactor1;
 let beatFactor2;
 let beatFactor3;
@@ -333,14 +339,14 @@ export default (e) => {
         0.3 + moodChanger / 10 + (beatFactor2 ? beatFactor2 / 40 : 0),
         Math.abs(0.8 - moodChanger) + (beatFactor1 ? beatFactor1 / 30 : 0),
       ];
-      neonClubCyberLinesMaterial.uniforms.uMood.value = new THREE.Vector3(
-        ...moodChangerColor
+      neonClubCyberLinesMaterial.uniforms.uMood.value = localVector3.fromArray(
+        moodChangerColor
       );
-      neonClubEmissiveMaterial.uniforms.uMood.value = new THREE.Vector3(
-        ...moodChangerColor
+      neonClubEmissiveMaterial.uniforms.uMood.value = localVector31.fromArray(
+        moodChangerColor
       );
       if (beatFactor1) {
-        cloudMaterial1.color = new THREE.Color(
+        localColor.setRGB(
           (moodChangerColor[0] + beatFactor1 / 30) / 5,
           (moodChangerColor[1] + beatFactor1 / 22) / 5,
           (moodChangerColor[2] + beatFactor1 / 30) / 5
@@ -349,27 +355,31 @@ export default (e) => {
         neonClubCyberLinesMaterial.uniforms.uBeat1.value = beatFactor1;
         neonClubCyberLinesMaterial.uniforms.uBeat2.value = beatFactor3;
         sphere.material.uniforms.uBeat.value = beatFactor3;
+        // cloudMaterial1.color = localColor;
       }
       if (beatFactor2) {
-        cloudMaterial2.color = new THREE.Color(
+        localColor1.setRGB(
           (moodChangerColor[1] + beatFactor2 / 22) / 5,
           (moodChangerColor[0] + beatFactor2 / 30) / 5,
           (moodChangerColor[2] + beatFactor2 / 30) / 5
         );
+        // cloudMaterial2.color = localColor1;
       }
       if (beatFactor3) {
-        cloudMaterial3.color = new THREE.Color(
+        localColor2.setRGB(
           (moodChangerColor[0] - beatFactor3 / 30) / 5,
           (moodChangerColor[1] + beatFactor3 / 25) / 5,
           (moodChangerColor[2] + beatFactor3 / 30) / 5
         );
+        // cloudMaterial3.color = localColor2;
       }
       if (beatFactor4) {
-        cloudMaterial4.color = new THREE.Color(
+        localColor3.setRGB(
           (moodChangerColor[0] - beatFactor4 / 30) / 5,
           (moodChangerColor[1] + beatFactor4 / 24) / 5,
           (moodChangerColor[2] + beatFactor4 / 32) / 5
         );
+        // cloudMaterial4.color = localColor3;
       }
     }
     // shaking the scene with beat
