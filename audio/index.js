@@ -29,6 +29,18 @@ const setupAudioContext = (audio) => {
   }
 }
 
+const removeAudioContext = () => {
+  if(audioContextHasBeenInitialized) {
+    audioContext.suspend();
+    audioContext.close();
+    source = null;
+    volumeControl = null;
+    analyzer = null;
+    audioContext = null;
+    audioContextHasBeenInitialized = false;
+  }
+};
+
 export const createAudio = ({ source, volume, autoPlay, currentTime }) => {
   if (!audioHasBeenCreated) {
     audio = new Audio()
@@ -39,6 +51,7 @@ export const createAudio = ({ source, volume, autoPlay, currentTime }) => {
     // "https://res.cloudinary.com/musixdevelop/video/upload/track-audios/DontLetMeDown.mp3"
     // audio.src = '/Ping 2.mp3'
     // audio.src = '/vocals.wav'
+    console.log(source);
     audio.src = source
     audio.currentTime = currentTime || 0
     audio.volume = volume || 1
@@ -51,6 +64,16 @@ export const createAudio = ({ source, volume, autoPlay, currentTime }) => {
     audioHasBeenCreated = true
   }
 }
+
+export const destroyAudio = () => {
+  if(audioHasBeenCreated) {
+    audio.pause();
+    removeAudioContext();
+    document.body.removeChild(audio);
+    audio = {};
+    audioHasBeenCreated = false;
+  }
+};
 
 export const getAudioFrequenciesByRange = ({
   frequencyData,
@@ -154,7 +177,9 @@ export const logMood = () => {
 }
 
 export const getAudio = ({ createOnCall }) => {
+  console.log(createOnCall, audio);
   if (createOnCall && !audio) {
+    console.log('create');
     createAudio()
   }
   return audio

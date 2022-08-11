@@ -14,6 +14,7 @@ import * as THREE from 'three';
 // import { Earthquake } from './passes/Earthquake.js'
 import {
   createAudio,
+  destroyAudio,
   getAudio,
   getFrequenciesByRange,
   getThreshold,
@@ -288,8 +289,9 @@ export default (e) => {
     autoPlay: true,
     // currentTime: 100.2,
   };
-  document.body.onkeyup = (e) => {
-    if (e.code === 'Space') {
+
+  const startAudioHandler = e => {
+    if(e.code === 'Space') {
       const audio = getAudio({ createOnCall: false });
       if (audio.paused !== undefined) {
         if (audio.paused) {
@@ -301,6 +303,8 @@ export default (e) => {
       createAudio(audioTrackInformation);
     }
   };
+
+  document.addEventListener('keyup', startAudioHandler);
 
   const updateClouds = (array, rotation, beatFactor) => {
     array.forEach((cloud) => {
@@ -402,6 +406,8 @@ export default (e) => {
   useCleanup(() => {
     // composer.removePass(finalPass)
     // composer.removePass(earthquakePass)
+    destroyAudio();
+    document.removeEventListener('keyup', startAudioHandler);
     for (const physicsId of physicsIds) {
       physics.removeGeometry(physicsId);
     }
